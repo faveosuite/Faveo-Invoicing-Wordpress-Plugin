@@ -12,7 +12,7 @@ To run this plugin, below are minimum requirement:
 
 Installation Guide
 --------------------------
-Upload the Akismet plugin to your blog, Activate it, then enter your Agora Invoicing key
+Upload the plugin to your blog, Activate it, then enter your Agora Invoicing key
 
 Credits
 --------------------------
