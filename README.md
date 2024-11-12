@@ -2,7 +2,7 @@
 
 This wordpress plugin is desgined to work with Agora Invoicing software and shows information about the product and pricing on wordpress website.
 
-Agora invoicing plugin is designed and developed by <a href="http://www.ladybirdweb.com/" target="_blank">Ladybird Web Solution Pvt Ltd</a>, and was launched on November 2024.
+Agora Invoicing plugin is designed and developed by <a href="http://www.ladybirdweb.com/" target="_blank">Ladybird Web Solution Pvt Ltd</a>, and was launched on November 2024.
 
 Requirements
 --------------------------
