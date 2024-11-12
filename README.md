@@ -50,4 +50,4 @@ Please report (suspected) security vulnerabilities to support@faveohelpdesk.com.
 
 Help
 --------------------------
-Visit the <a href="https://github.com/ladybirdweb/agora-invoicing-community/issues">issue</a> page. If you'd like professional help, commercial support is available; please email us through the <a href="https://billing.faveohelpdesk.com/contact-us/">contact form</a>.
+Visit the <a href="https://github.com/ladybirdweb/Agora-Invoicing-Wordpress-Plugin/issues">issue</a> page. If you'd like professional help, commercial support is available; please email us through the <a href="https://billing.faveohelpdesk.com/contact-us/">contact form</a>.
