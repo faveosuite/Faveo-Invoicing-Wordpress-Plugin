@@ -4,8 +4,8 @@ add_action('admin_menu', 'agora_invoicing_menu');
 
 function agora_invoicing_menu() {
     add_menu_page(
-        'Agora Invoicing Settings',
-        'Agora Invoicing',
+        ' Agora Invoicing Settings',
+        ' Agora Invoicing',
         'manage_options',
         'agora-invoicing-settings',
         'agora_invoicing_settings_page',
@@ -36,14 +36,14 @@ function agora_invoicing_settings_init() {
 
     add_settings_section(
         'agora_invoicing_settings_section',
-        'API Settings',
+        ' API Settings',
         'agora_invoicing_settings_section_callback',
         'agora-invoicing-settings'
     );
 
     add_settings_field(
         'agora_invoicing_api_url',
-        'API URL',
+        ' API URL',
         'agora_invoicing_api_url_callback',
         'agora-invoicing-settings',
         'agora_invoicing_settings_section'

@@ -1,3 +1,5 @@
+/*FAVEO AGORA BILLING WORDPRESS PLUGIN STYLES*/
+
 .helpdesk-products {
     display: flex;
     flex-wrap: wrap;
@@ -7,7 +9,7 @@
 .helpdesk-product {
     border: 1px solid #ccc;
     padding: 20px;
-    width: 300px;
+    /*width: 300px;*/
 }
 
 .helpdesk-product img {
@@ -15,50 +17,19 @@
     height: auto;
 }
 
-.helpdesk-product .button {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #0073aa;
-    color: #fff;
-    text-decoration: none;
-}
-
-.helpdesk-product .button:hover {
-    background-color: #005177;
-}
-.description ul{
-    list-style: none !important;
-}
-.description li{
-    font-size: 14px;
-  list-style: none;
-  border-bottom: 1px solid #f0f0f0;
-  padding-inline-start: 0;
-  border-width: 1px;
-  padding: 8px;
-	color:#777777;
-	margin-left:-9px;
-}
-
-/* PRICING */
+/* PRICING product-style-1*/
 .packagess {
-  margin: 10px;
-  width: 230px;
+  /*margin: 10px;*/
+  width: 208px;
   padding-bottom: 1.5em;
   height: 100%;
-/* 	background: linear-gradient(180deg,#47b0e1 2.8rem, 
-              #089bd1 2.8rem, #36a5d9 2.8rem, 
-              #499abf 10rem, white 10rem, white 100%); */
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-	border:1px solid lightgray;
   flex-wrap: wrap;
   color: #000;
 	font-family:Open Sans,Arial,Helvetica,sans-serif;
-	border-radius:4px;
 }
 .containerr {
   width: 100%;
@@ -81,31 +52,14 @@
 	margin-top:-10px
 }
 
-
-
-/* PRODUCT PRICING */
-.product-pricing{
-height: 190px !important;
-width:230px !important;
-background: #36a5d9 !important;
-}
 .product-pricing >h1{
-	padding: 20px 10px 10px !important;
-/* 	width:250px; */
-	font-size:14px !important;
-	color:#fff !important;
+	padding: 10px 0px 20px !important;
+	font-size:1.4em !important;
 	font-weight: 700 !important;
-/* 	border-bottom:1px solid gray !important; */
-	background: #47b0e1;
 	height:30px;
-/* 	padding-bottom:10px; */
-/* 	vertical-align:center; */
-/* 	padding-top:20px !important; */
-	text-transform:uppercase !important;
 }
 .product-pricing >h2{
-	font-size:26px !important;
-		color:#fff !important;
+	font-size:2.7rem ;
 	font-weight: 600 !important;
 	margin-top:10px !important;
 }
@@ -113,10 +67,223 @@ background: #36a5d9 !important;
 	opacity:0.6 !important;
 	margin-top:-20px !important;
 	padding-bottom:0 !important;
-	color:#ffffff;
 }
 .price_descriptionn{
 	margin-top:-10px !important;
-	color:#ffffff;
+}
+.description ul{
+    list-style-image: url('../assets/images/checkicon-new.png');
+    
+    text-align:left;
+    margin-top:20px;
+}
+.description li{
+    font-size: 14px;
+  padding-inline-start: 0;
+  padding-bottom: 10px !important;
+	color:#777777;
+	margin-left: 9px;
 }
 
+
+.product-container{
+    margin: 5px;
+    box-shadow: 3px 4px 5px 2px #c7c7c7;
+        padding: 10px 10px 10px 10px;
+}
+
+.products-wrapper{
+    display: -webkit-box !important;
+    text-align:center;
+    margin-top:40px;
+}
+.product-pricing{
+    height:240px;
+    background:transparent !important;
+}
+
+/* Toggle Switch Styles */
+.toggle-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 200px; /* Adjust the width as needed */
+}
+
+.toggle-labels {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.toggle-label {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Toggle Switch Styles */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 30px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    border-radius: 50%;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px);
+}
+
+
+/*Product's backgroud colors-  needs to be removed after recieving the colors from billing*/
+.product-styles-group1 {
+    background: linear-gradient(rgb(229, 243, 255), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
+}
+.product-styles-group2 {
+    background: linear-gradient(rgb(255, 221, 199), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
+}
+.product-styles-group3 {
+    background: linear-gradient(rgb(193, 254, 215), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
+    margin-top:-33px;
+}
+.product-styles-group4 {
+    background: linear-gradient(rgb(238, 229, 252), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
+}
+.product-styles-group5 {
+    background: linear-gradient(rgb(252, 217, 215), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
+}
+.popular-ribbon {
+    --f: 10px;
+    --r: 12px;
+    --t: 0px;
+        height: 25px;
+    margin-left: 60px;
+    margin-right: -10px;
+    position: relative;
+    inset: var(--t) calc(-1* var(--f)) auto auto;
+    padding: 3px 10px var(--f) calc(10px + var(--r));
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--f)), calc(100% - var(--f)) 100%, calc(100% - var(--f)) calc(100% - var(--f)), 0 calc(100% - var(--f)), var(--r) calc(50% - var(--f) / 2));
+    background: #0084e4;
+    box-shadow: 0 calc(-1* var(--f)) 0 inset #0005;
+    color: #ffffff;
+    font-size:14px;
+    font-weight:500;
+}
+/*Product's backgroud colors-  needs to be removed after recieving the colors from billing*/
+
+
+@media screen and (max-width: 480px) {
+ .products-wrapper {
+     display: block !important; 
+     margin-left: 0 !important;
+}
+.packagess{
+        width: 300px;
+}
+}
+
+
+/* Tooltip container */
+.description li {
+    position: relative;
+    cursor: default;
+    
+}
+/*.description li[title] {*/
+.description p {
+    display: inline;
+    text-decoration:underline;
+text-decoration-style: dotted;
+}
+.description p:hover {
+    text-decoration:underline;
+    cursor: pointer;
+}
+
+/* Tooltip text */
+.description li[title]::after {
+    content: attr(title);
+    position: absolute;
+    top: 22px;
+    left: -10px;
+    visibility: hidden;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s;
+    width: max-content;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Show the tooltip text when hovering over the list item */
+.description li[title]:hover::after {
+    visibility: visible;
+    opacity: 1;
+}
+/* Show the tooltip text when hovering over the list item */
+.description li:hover::after {
+    visibility: none;
+    opacity: 1;
+}
+
+ /*Arrow for the tooltip */
+.description li[title]::before {
+    content: "\f00c";
+    content:"";
+    position: absolute;
+       top: 13px;
+    left: 0px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+    visibility: hidden;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Show the arrow when hovering over the list item */
+.description li[title]:hover::before {
+    visibility: visible;
+    opacity: 1;
+}

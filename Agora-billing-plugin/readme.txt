@@ -1,12 +1,17 @@
-=== Agora Invoicing ===
+=== Faveo Agora Invoicing ===
 Contributors: ladybirdweb
 Tags: invoicing, API, pricing
+Requires at least: 5.0
+Tested up to: 6.6
+Stable tag: 1.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin pulls product pricing, Description/Details, currency and order URL from the Faveo Agora invoicing web application.
+This plugin pulls product pricing, Description/Details, currency, and order URL from the Faveo Agora invoicing web application.
 
 == Description ==
 
-This plugin pulls product pricing, Description/Details, currency and order URL from the Faveo Agora invoicing web application.
+This plugin pulls product pricing, Description/Details, currency, and order URL from the Faveo Agora invoicing web application.
 
 == Installation ==
 
