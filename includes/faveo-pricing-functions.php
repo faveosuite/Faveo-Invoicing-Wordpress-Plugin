@@ -1,5 +1,5 @@
 <?php
-function faveopricing_calling($atts) {
+function fhai_calling($atts) {
     // Set default attributes and merge with passed attributes
     $atts = shortcode_atts(
         array(
@@ -19,7 +19,7 @@ function faveopricing_calling($atts) {
     }
 
     // Fetch the API URL from the settings
-    $api_url = get_option('agora_invoicing_api_url');
+    $api_url = get_option('fhai_api_url');
     if (empty($api_url)) {
         return 'API URL is not set. Please configure it in the plugin settings.';
     }
@@ -40,13 +40,22 @@ function faveopricing_calling($atts) {
     }
 
     // Get the currency symbol based on the specified country
-    $currency_symbol = fabwp_currency_symbol($atts['country']);
+    $currency_symbol = fhai_currency_symbol($atts['country']);
 
     // HTML output for all products in the group
     $html = '';
 
-    // Only add JavaScript for toggle functionality if group is 11
-    if ($group_id == 11) {
+  // Check if all products in the group have "status": "1"
+    $all_status_one = true;
+    foreach ($products_data['products'] as $product) {
+        if ($product['status'] !== "1") {
+            $all_status_one = false;
+            break;
+        }
+    }
+    
+     // Add toggle functionality only if all products have "status": "1"
+    if ($all_status_one) {
         $html .= '<center>';
         $html .= '<div class="toggle-wrapper">';
         $html .= '<div class="toggle-labels">';
@@ -100,6 +109,10 @@ foreach ($products_data['products'] as $product) {
         $monthly_price = floatval($product['add_price']);
     }
 
+ // Apply offer price if available
+        $offer_price = isset($product['offer_price']) ? floatval($product['offer_price']) : 0;
+        $final_price = $offer_price > 0 ? $monthly_price - ($monthly_price * ($offer_price / 100)) : $monthly_price;
+        
     // Set font size for "Custom Pricing" if highlighted and group is not 11
     $custom_pricing_style = ($product['highlight'] == 1 && $group_id != 11) ? 'style="font-size: 2.0rem;"' : '';
 
@@ -128,20 +141,34 @@ foreach ($products_data['products'] as $product) {
         // $html .= '<h1><span class="tooltip" data-tooltip="' . esc_attr($product['add_price']) . '">' . esc_html($product['name']) . '</span></h1>';
 
     // Determine if "Custom Pricing" should be displayed
-    if ($product['highlight'] == 1 && $group_id != 11) {
-        $html .= '<h2 ' . $custom_pricing_style . '>Custom Pricing</h2>';
-    } else {
-        // Store both monthly and yearly prices for JavaScript to use
-        $html .= '<h2 data-monthly-price="' . $currency_symbol . esc_html(number_format($monthly_price)) . '"';
-        if ($pricing_type == 'yearly' && $group_id != 11) {
-            $html .= ' data-yearly-price="' . esc_html($yearly_price) . '">';
-            $html .= $currency_symbol . esc_html(number_format($monthly_price));
+   if ($product['highlight'] == 1 && $group_id != 11) {
+    // Display "Custom Pricing" for highlighted products (except for group 11)
+    $html .= '<h2 ' . $custom_pricing_style . '>Custom Pricing</h2>';
+} else {
+    if ($offer_price > 0 && $group_id != 11) {
+        // Display discounted price (final_price) and original price (monthly_price) without decimals
+        $html .= '<h2 data-monthly-price="' . $currency_symbol . esc_html(number_format($final_price, 0)) . '" ';
+        if ($pricing_type == 'yearly') {
+            $html .= 'data-yearly-price="' . esc_html($yearly_price) . '">';
         } else {
             $html .= '>';
-            $html .= $currency_symbol . esc_html(number_format($monthly_price));
+        }
+        $html .= $currency_symbol . esc_html(number_format($final_price, 0)) . '</h2>';
+        $html .= '<p class="original-price" >' . $currency_symbol . esc_html(number_format($monthly_price, 0)) . '</p>';
+    } else {
+        // Default behavior for group 11 and products without offer_price
+        $html .= '<h2 data-monthly-price="' . $currency_symbol . esc_html(number_format($monthly_price, 0)) . '" ';
+        if ($pricing_type == 'yearly' && $group_id != 11) {
+            $html .= 'data-yearly-price="' . esc_html(number_format($yearly_price, 0)) . '">';
+            $html .= $currency_symbol . esc_html(number_format($yearly_price, 0));
+        } else {
+            $html .= '>';
+            $html .= $currency_symbol . esc_html(number_format($monthly_price, 0));
         }
         $html .= '</h2>';
     }
+}
+
 
     // Display price_description only if the pricing is not "Custom Pricing"
     if (!($product['highlight'] == 1 && $group_id != 11)) {
@@ -199,7 +226,7 @@ if ($group_id != 11 && $group_id != 7) {
 }
 
 // Display currency symbol based on country code
-function fabwp_currency_symbol($country_code) {
+function fhai_currency_symbol($country_code) {
     switch ($country_code) {
         case 'US':
             return '$'; // US Dollar
@@ -380,5 +407,3 @@ function fabwp_currency_symbol($country_code) {
             return '$'; // Default to Dollar
     }
 }
-
-?>

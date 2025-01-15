@@ -63,10 +63,12 @@
 	font-weight: 600 !important;
 	margin-top:10px !important;
 }
-.strikeeprice{
-	opacity:0.6 !important;
-	margin-top:-20px !important;
-	padding-bottom:0 !important;
+.original-price{
+    text-decoration: line-through;
+    /*color: gray;*/
+     opacity:0.6;
+    margin-top: -20px;
+    font-size: 17px;
 }
 .price_descriptionn{
 	margin-top:-10px !important;

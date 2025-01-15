@@ -1,8 +1,8 @@
-=== Faveo Agora Invoicing ===
+=== Agora Invoicing Wordpress Plugin ===
 Contributors: ladybirdweb
 Tags: invoicing, API, pricing
 Requires at least: 5.0
-Tested up to: 6.6
+Tested up to: 6.7
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -11,7 +11,11 @@ This plugin pulls product pricing, Description/Details, currency, and order URL 
 
 == Description ==
 
-This plugin pulls product pricing, Description/Details, currency, and order URL from the Faveo Agora invoicing web application.
+The Agora Invoicing WordPress plugin enables you to integrate [Agora Invoicing Software](https://github.com/ladybirdweb/agora-invoicing-community) with your WordPress website. With this plugin, you can easily display product information, pricing, and other invoicing details directly on your site, improving the user experience and simplifying your invoicing process.
+
+[Wordpress plugin website](https://wordpress.org/plugins/faveo-agora-invoicing)
+
+Developed by **[Ladybird Web Solution Pvt Ltd](http://www.ladybirdweb.com/)**, this plugin was launched in **November 2024** to provide a seamless connection between Agora Invoicing and WordPress.
 
 == Installation ==
 
