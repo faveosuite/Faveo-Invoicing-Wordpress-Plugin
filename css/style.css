@@ -20,7 +20,7 @@
 /* PRICING product-style-1*/
 .packagess {
   /*margin: 10px;*/
-  width: 208px;
+  width: 205px;
   padding-bottom: 1.5em;
   height: 100%;
   display: flex;
@@ -180,7 +180,7 @@ input:checked + .slider:before {
 }
 .product-styles-group3 {
     background: linear-gradient(rgb(193, 254, 215), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
-    margin-top:-33px;
+    /*margin-top:-33px;*/
 }
 .product-styles-group4 {
     background: linear-gradient(rgb(238, 229, 252), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
@@ -288,4 +288,8 @@ text-decoration-style: dotted;
 .description li[title]:hover::before {
     visibility: visible;
     opacity: 1;
+}
+.products-wrapper.scrollable {
+    /*max-height: 600px;*/
+    overflow-x: scroll;
 }

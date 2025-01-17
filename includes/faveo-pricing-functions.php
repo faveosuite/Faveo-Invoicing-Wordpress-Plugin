@@ -69,14 +69,18 @@ function fhai_calling($atts) {
         $html .= '</div>';
         $html .= '</center>';
     }
+$scrollable_class = count($products_data['products']) > 5 ? 'scrollable' : '';
 
-    $html .= '<div class="products-wrapper"';
+    $html .= '<div class="products-wrapper ' . $scrollable_class . '"';
+    
+    // $html .= '<div class="products-wrapper"';
 
 if ($group_id == 11) {
     $html .= ' style="margin-left:255px;"';
-} elseif ($group_id == 7) {
-    $html .= ' style="margin-left: 20px;" ';
-}
+} 
+// elseif ($group_id == 7) {
+//     $html .= ' style="margin-left: 20px;" ';
+// }
 
 $html .= '>'; // Wrapper to apply flexbox
 
@@ -114,7 +118,7 @@ foreach ($products_data['products'] as $product) {
         $final_price = $offer_price > 0 ? $monthly_price - ($monthly_price * ($offer_price / 100)) : $monthly_price;
         
     // Set font size for "Custom Pricing" if highlighted and group is not 11
-    $custom_pricing_style = ($product['highlight'] == 1 && $group_id != 11) ? 'style="font-size: 2.0rem;"' : '';
+    $custom_pricing_style = ($product['add_to_contact'] == 1 && $group_id != 11) ? 'style="font-size: 1.8rem;"' : '';
 
     // Apply specific width to packagess based on group
     $packagess_style = '';
@@ -128,8 +132,11 @@ foreach ($products_data['products'] as $product) {
     $html .= '<div class="product-container ' . esc_attr($atts['style']) . $product_styles_group1 . $product_styles_group2 . $product_styles_group3 . $product_styles_group4 . $product_styles_group5 . '" data-group-id="' . esc_attr($group_id) . '" data-days="' . esc_attr($product['days']) . '">'; // Add the style class and days attribute here
 
     // Add a ribbon for group 3 and group 4 products
-    if (!empty($product_styles_group3)) {
-        // $html .= '<div class="ribbon"><span>Special</span></div>';
+    // if (!empty($product_styles_group3)) {
+    //      $html .= '<div class="popular-ribbon text-light">Most Popular</div>';
+    // }
+    
+    if ($product['highlight'] == 1) {
          $html .= '<div class="popular-ribbon text-light">Most Popular</div>';
     }
 
@@ -141,8 +148,8 @@ foreach ($products_data['products'] as $product) {
         // $html .= '<h1><span class="tooltip" data-tooltip="' . esc_attr($product['add_price']) . '">' . esc_html($product['name']) . '</span></h1>';
 
     // Determine if "Custom Pricing" should be displayed
-   if ($product['highlight'] == 1 && $group_id != 11) {
-    // Display "Custom Pricing" for highlighted products (except for group 11)
+   if ($product['add_to_contact'] == 1 && $group_id != 11) {
+    // Display "Custom Pricing" for add_to_contact is enabled (except for group 11)
     $html .= '<h2 ' . $custom_pricing_style . '>Custom Pricing</h2>';
 } else {
     if ($offer_price > 0 && $group_id != 11) {

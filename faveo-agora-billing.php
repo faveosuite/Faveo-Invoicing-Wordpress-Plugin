@@ -2,10 +2,11 @@
 /**
  * Plugin Name: Faveo Agora Invoicing
  * Description: This plugin pulls product pricing, Description/Details, currency, and order URL from the Agora invoicing web application.
- * Version: 1.0
+ * Version: 1.0.4
  * Author: Ladybird Web Solution Pvt Ltd
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * Icon: /wp-content/plugins/faveo-agora-invoicing/assets/plugin-icon.png
  */
 
 // Prevent direct access to the file
