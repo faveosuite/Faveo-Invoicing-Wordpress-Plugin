@@ -3,28 +3,25 @@ function fhai_calling($atts) {
     // Set default attributes and merge with passed attributes
     $atts = shortcode_atts(
         array(
-            'group' => '',          // Group Id
-            'country' => 'US',      // Default country
-            'days' => '',           // Days filter
-            'class' => '',          // Custom class for styling
-            'style' => '',          // New style class for specific product
+            'group' => '',        
+            'country' => 'US',     
+            'days' => '',         
+            'class' => '',        
+            'style' => '',  
         ), 
         $atts
     );
 
-    // Validate group ID
     $group_id = absint($atts['group']);
     if ($group_id <= 0) {
         return 'Invalid group ID provided.';
     }
 
-    // Fetch the API URL from the settings
     $api_url = get_option('fhai_api_url');
     if (empty($api_url)) {
         return 'API URL is not set. Please configure it in the plugin settings.';
     }
 
-    // Fetch products based on group ID and country
     $products_url = $api_url . '?group=' . $group_id . '&country=' . $atts['country'];
     $products_response = wp_remote_get($products_url, array('method' => 'GET'));
 
@@ -39,13 +36,10 @@ function fhai_calling($atts) {
         return 'No products available for the specified group and country.';
     }
 
-    // Get the currency symbol based on the specified country
     $currency_symbol = fhai_currency_symbol($atts['country']);
 
-    // HTML output for all products in the group
     $html = '';
 
-  // Check if all products in the group have "status": "1"
     $all_status_one = true;
     foreach ($products_data['products'] as $product) {
         if ($product['status'] !== "1") {
@@ -54,7 +48,6 @@ function fhai_calling($atts) {
         }
     }
     
-     // Add toggle functionality only if all products have "status": "1"
     if ($all_status_one) {
         $html .= '<center>';
         $html .= '<div class="toggle-wrapper">';
@@ -69,72 +62,51 @@ function fhai_calling($atts) {
         $html .= '</div>';
         $html .= '</center>';
     }
-$scrollable_class = count($products_data['products']) > 5 ? 'scrollable' : '';
-
-    $html .= '<div class="products-wrapper ' . $scrollable_class . '"';
     
-    // $html .= '<div class="products-wrapper"';
+    // $scrollable_class = count($products_data['products']) > 5 ? 'scrollable' : '';
+    // $html .= '<div class="products-wrapper ' . $scrollable_class . '"';
+    $html .= '<div class="products-wrapper" ';
+    $html .= ($group_id == 11) ? ' style="margin-left:255px;"' : '';
+    $html .= '>';
 
-if ($group_id == 11) {
-    $html .= ' style="margin-left:255px;"';
-} 
-// elseif ($group_id == 7) {
-//     $html .= ' style="margin-left: 20px;" ';
-// }
-
-$html .= '>'; // Wrapper to apply flexbox
-
-foreach ($products_data['products'] as $product) {
-    // Special handling for group 11
-    if ($group_id == 11 && ($product['add_price'] == "0")) {
-        continue; // Skip freelancer products
+    foreach ($products_data['products'] as $product) {
+ 
+    if ($all_status_one && $product['add_price'] == "0") {
+        continue;
     }
 
     // Use the custom class attribute if provided, else fallback to default class
     $product_class = !empty($atts['class']) ? esc_attr($atts['class']) : 'product-' . esc_attr($product['id']);
 
-    //Classes for Product's background colors-  needs to be removed after recieving the colors from billing
-    $product_styles_group1 = in_array($product['name'], ['Helpdesk Freelancer', 'ServiceDesk Freelancer', 'Faveo Cloud HelpDesk', 'Support service', 'Customization', 'Faveo Upgrade', 'Install service']) ? ' product-styles-group1' : '';
-    $product_styles_group2 = in_array($product['name'], ['Helpdesk Startup', 'Servicedesk Startup', 'Helpdesk Startup (Recurring)', 'ServiceDesk Startup (Recurring)']) ? ' product-styles-group2' : '';
-    $product_styles_group3 = in_array($product['name'], ['Helpdesk SME', 'ServiceDesk SME', 'Helpdesk SME (Recurring)', 'ServiceDesk SME (Recurring)', 'Faveo Cloud ServiceDesk']) ? ' product-styles-group3' : '';
-    $product_styles_group4 = in_array($product['name'], ['Helpdesk Enterprise', 'Helpdesk Enterprise (Recurring)', 'ServiceDesk Enterprise', 'ServiceDesk Enterprise (Recurring)']) ? ' product-styles-group4' : '';
-    $product_styles_group5 = in_array($product['name'], ['Helpdesk Enterprise Pro', 'ServiceDesk Enterprise Pro']) ? ' product-styles-group5' : '';
-
-    // Determine if the toggle is enabled (monthly or yearly pricing)
-   $pricing_type = isset($_GET['pricing']) ? sanitize_text_field(wp_unslash($_GET['pricing'])) : 'monthly';
-
-    // Calculate the monthly price based on pricing type
-    if ($pricing_type == 'yearly') {
-        // Calculate monthly price from yearly price
-        $yearly_price = floatval($product['add_price']);
-        $monthly_price = $yearly_price / 12;
+    $background_color_style = '';
+    if (!empty($product['pricing-background-color'])) {
+        
+        $background_color_style = 'style="background-color: ' . esc_attr($product['pricing-background-color']) . ';"';
     } else {
-        // Use the default monthly price
-        $monthly_price = floatval($product['add_price']);
+        
+        $product_styles_group1 = in_array($product['name'], ['Helpdesk Freelancer', 'ServiceDesk Freelancer', 'Faveo Cloud HelpDesk', 'Support service', 'Customization', 'Faveo Upgrade', 'Install service']) ? ' product-styles-group1' : '';
+        $product_styles_group2 = in_array($product['name'], ['Helpdesk Startup', 'Servicedesk Startup', 'Helpdesk Startup (Recurring)', 'ServiceDesk Startup (Recurring)']) ? ' product-styles-group2' : '';
+        $product_styles_group3 = in_array($product['name'], ['Helpdesk SME', 'ServiceDesk SME', 'Helpdesk SME (Recurring)', 'ServiceDesk SME (Recurring)', 'Faveo Cloud ServiceDesk']) ? ' product-styles-group3' : '';
+        $product_styles_group4 = in_array($product['name'], ['Helpdesk Enterprise', 'Helpdesk Enterprise (Recurring)', 'ServiceDesk Enterprise', 'ServiceDesk Enterprise (Recurring)']) ? ' product-styles-group4' : '';
+        $product_styles_group5 = in_array($product['name'], ['Helpdesk Enterprise Pro', 'ServiceDesk Enterprise Pro']) ? ' product-styles-group5' : '';
     }
 
- // Apply offer price if available
+    // Determine if the toggle is enabled (monthly or yearly pricing)
+     $pricing_type = isset($_GET['pricing']) ? sanitize_text_field(wp_unslash($_GET['pricing'])) : 'monthly';
+
+     $monthly_price = ($pricing_type == 'yearly') ? floatval($product['add_price']) / 12 : floatval($product['add_price']);
+
+    // Apply offer price if available
         $offer_price = isset($product['offer_price']) ? floatval($product['offer_price']) : 0;
         $final_price = $offer_price > 0 ? $monthly_price - ($monthly_price * ($offer_price / 100)) : $monthly_price;
         
     // Set font size for "Custom Pricing" if highlighted and group is not 11
-    $custom_pricing_style = ($product['add_to_contact'] == 1 && $group_id != 11) ? 'style="font-size: 1.8rem;"' : '';
+    $custom_pricing_style = ($product['status'] == 0 ) ? 'style="font-size: 1.8rem;"' : '';
 
     // Apply specific width to packagess based on group
-    $packagess_style = '';
-    if ($group_id == 11) {
-        $packagess_style = 'style="width: 300px;"';
-    } elseif ($group_id == 7) {
-        $packagess_style = 'style="width: 250px;"';
-    }
+     $packagess_style = $group_id == 11 ? 'style="width: 300px;"' : ($group_id == 7 ? 'style="width: 250px;"' : '');
 
-    // Display the product container with additional class for background colors
-    $html .= '<div class="product-container ' . esc_attr($atts['style']) . $product_styles_group1 . $product_styles_group2 . $product_styles_group3 . $product_styles_group4 . $product_styles_group5 . '" data-group-id="' . esc_attr($group_id) . '" data-days="' . esc_attr($product['days']) . '">'; // Add the style class and days attribute here
-
-    // Add a ribbon for group 3 and group 4 products
-    // if (!empty($product_styles_group3)) {
-    //      $html .= '<div class="popular-ribbon text-light">Most Popular</div>';
-    // }
+   $html .= '<div class="product-container ' . esc_attr($atts['style']) . $product_styles_group1 . $product_styles_group2 . $product_styles_group3 . $product_styles_group4 . $product_styles_group5 . '" data-group-id="' . esc_attr($group_id) . '" data-days="' . esc_attr($product['days']) . '"' . $product_container_style . '>'; // Add the style class and days attribute here
     
     if ($product['highlight'] == 1) {
          $html .= '<div class="popular-ribbon text-light">Most Popular</div>';
@@ -145,48 +117,45 @@ foreach ($products_data['products'] as $product) {
 
     $html .= '<div class="product-pricing ' . ($product['highlight'] == 1 ? 'highlighted-product' : '') . '">';
     $html .= '<h1>' . esc_html($product['name']) . '</h1>';
-        // $html .= '<h1><span class="tooltip" data-tooltip="' . esc_attr($product['add_price']) . '">' . esc_html($product['name']) . '</span></h1>';
 
     // Determine if "Custom Pricing" should be displayed
-   if ($product['add_to_contact'] == 1 && $group_id != 11) {
+   if ($product['add_to_contact'] == 1 && $product['status'] == 0) {
+   
     // Display "Custom Pricing" for add_to_contact is enabled (except for group 11)
     $html .= '<h2 ' . $custom_pricing_style . '>Custom Pricing</h2>';
+
+    $custom_sales_url = get_option('fhai_custom_sales_url', 'https://www.example.com/');
+     $html .= '<a href="' . esc_url($custom_sales_url) . '" class="button medium color-6">Custom Sales</a>';
 } else {
-    if ($offer_price > 0 && $group_id != 11) {
-        // Display discounted price (final_price) and original price (monthly_price) without decimals
-        $html .= '<h2 data-monthly-price="' . $currency_symbol . esc_html(number_format($final_price, 0)) . '" ';
-        if ($pricing_type == 'yearly') {
-            $html .= 'data-yearly-price="' . esc_html($yearly_price) . '">';
-        } else {
-            $html .= '>';
-        }
-        $html .= $currency_symbol . esc_html(number_format($final_price, 0)) . '</h2>';
-        $html .= '<p class="original-price" >' . $currency_symbol . esc_html(number_format($monthly_price, 0)) . '</p>';
+    if ($offer_price > 0 && $all_status_one) {
+    // Display discounted price (final_price) and original price (monthly_price) without decimals
+    $html .= '<h2 data-monthly-price="' . esc_html($currency_symbol . ($atts['country'] === 'IN' ? indian_number_format($final_price) : number_format($final_price, 0))) . '"';
+    if ($pricing_type == 'yearly') {
+        $html .= ' data-yearly-price="' . esc_html($yearly_price) . '">';
     } else {
-        // Default behavior for group 11 and products without offer_price
-        $html .= '<h2 data-monthly-price="' . $currency_symbol . esc_html(number_format($monthly_price, 0)) . '" ';
-        if ($pricing_type == 'yearly' && $group_id != 11) {
-            $html .= 'data-yearly-price="' . esc_html(number_format($yearly_price, 0)) . '">';
-            $html .= $currency_symbol . esc_html(number_format($yearly_price, 0));
-        } else {
-            $html .= '>';
-            $html .= $currency_symbol . esc_html(number_format($monthly_price, 0));
-        }
-        $html .= '</h2>';
+        $html .= '>';
     }
-}
+    $html .= esc_html($currency_symbol . ($atts['country'] === 'IN' ? indian_number_format($final_price) : number_format($final_price, 0))) . '</h2>';
+    $html .= '<p class="original-price">' . esc_html($currency_symbol . ($atts['country'] === 'IN' ? indian_number_format($monthly_price) : number_format($monthly_price, 0))) . '</p>';
+} else {
+    // Default behavior for group 11 and products without offer_price
+    $html .= '<h2 data-monthly-price="' . esc_html($currency_symbol . ($atts['country'] === 'IN' ? indian_number_format($monthly_price) : number_format($monthly_price, 0))) . '"';
+    if ($pricing_type == 'yearly' && $group_id != 11) {
+        $html .= ' data-yearly-price="' . esc_html($yearly_price) . '">';
+        $html .= esc_html($currency_symbol . ($atts['country'] === 'IN' ? indian_number_format($yearly_price) : number_format($yearly_price, 0)));
 
-
-    // Display price_description only if the pricing is not "Custom Pricing"
-    if (!($product['highlight'] == 1 && $group_id != 11)) {
-        $html .= '<p class="price_descriptionn">' . wp_kses_post($product['price_description']) . '</p>';
+    } else {
+        $html .= '>';
+        $html .= esc_html($currency_symbol . ($atts['country'] === 'IN' ? indian_number_format($monthly_price) : number_format($monthly_price, 0)));
     }
-
+    $html .= '</h2>';
+    $html .= '<p class="price_descriptionn">' . wp_kses_post($product['price_description']) . '</p>';
     $html .= '<a href="' . esc_url($product['shoping_cart_link']) . '" class="button medium color-6">Buy Now</a>';
+}
+}
 
     $html .= '</div>';
 
-    // $html .= '<div class="description">' . wp_kses_post($product['description']) . '</div>';
      $html .= '<div class="description">';
     // Add tooltips to each list item
     $description_with_tooltips = preg_replace_callback(
@@ -194,21 +163,19 @@ foreach ($products_data['products'] as $product) {
     function ($matches) {
     // Return the list item with a title attribute for tooltip
     return '<li>' . $matches[1] . '</li>';
-    //  return '<li title="hello">' . $matches[1] . '</li>';
+   
     },
      $product['description']
     );
     $html .= wp_kses_post($description_with_tooltips);
     $html .= '</div>';
 
-    
-    // Display the Price and currency based on country
     $price_html = '';
 
     if (isset($product['prices']) && is_array($product['prices'])) {
         foreach ($product['prices'] as $price) {
             if ($price['country'] === $atts['country']) {
-                $price_html = '<p><strong>Price:</strong> ' . $currency_symbol . esc_html(number_format(floatval($price['price']))) . ' ' . esc_html($price['currency']) . '</p>';
+               $price_html = '<p><strong>Price:</strong> ' . $currency_symbol . esc_html($atts['country'] === 'IN' ? indian_number_format(floatval($price['price'])) : number_format(floatval($price['price']), 0)) . ' ' . esc_html($price['currency']) . '</p>';
                 break;
             }
         }
@@ -216,18 +183,12 @@ foreach ($products_data['products'] as $product) {
 
     $html .= $price_html;
 
-    $html .= '</div>'; // Close the packagess div
-    $html .= '</div>'; // Close the additional-container div
-    $html .= '</div>'; // Close the product-container div
+    $html .= '</div>'; // packagess
+    $html .= '</div>'; // additional-container
+    $html .= '</div>'; // product-container
 }
 
-$html .= '</div>'; // Close the products-wrapper div
-
-if ($group_id != 11 && $group_id != 7) {
-    $html .= '<style>';
-    $html .= '.product-container li { margin-top: 15px; }';
-    $html .= '</style>';
-}
+$html .= '</div>'; // products-wrapper
 
     return $html;
 }
@@ -236,12 +197,10 @@ if ($group_id != 11 && $group_id != 7) {
 function fhai_currency_symbol($country_code) {
     switch ($country_code) {
         case 'US':
-            return '$'; // US Dollar
+            return '$';
         case 'IN':
-            return '₹'; // Indian Rupee
+            return '₹';
         case 'ZW':
-            return 'Z$'; // Zimbabwe Real
-         case 'ZW':
             return 'Z$';
          case 'AF':
             return '؋';
@@ -414,3 +373,20 @@ function fhai_currency_symbol($country_code) {
             return '$'; // Default to Dollar
     }
 }
+
+function indian_number_format($number) {
+    $number = (string) round($number); // Ensure rounding first
+    $len = strlen($number);
+    if ($len <= 3) {
+        return $number;
+    }
+    $num = substr($number, -3); // Last 3 digits
+    $remainder = substr($number, 0, $len - 3); // Remaining digits
+    $formatted = '';
+    while (strlen($remainder) > 2) {
+        $formatted = ',' . substr($remainder, -2) . $formatted;
+        $remainder = substr($remainder, 0, -2);
+    }
+    return $remainder . $formatted . ',' . $num;
+}
+

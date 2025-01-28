@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var monthlyPriceElement = product.querySelector(".product-pricing h2");
             var yearlyPrice = parseFloat(monthlyPriceElement.getAttribute("data-yearly-price"));
             
-            if (groupId == 11) {
+           
                 if (toggle.checked) {
                     // When toggle is enabled, show products with days=366 and calculate monthly price
                     if (product.dataset.days == "366") {
@@ -37,28 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         product.style.display = "none"; // Hide other products
                     }
                 }
-            } 
-            else {
-                // For groups other than 11
-                if (toggle.checked) {
-                    // When toggle is enabled, show products with days=366 and calculate monthly price
-                    if (product.dataset.days == "366") {
-                        var monthlyPrice = (yearlyPrice / 12).toFixed(2);
-                        monthlyPriceElement.textContent = currencySymbol + monthlyPrice;
-                        product.style.display = "block"; // Ensure the product is visible
-                    } else {
-                        product.style.display = "none"; // Hide other products
-                    }
-                } else {
-                    // When toggle is disabled, show products with default monthly price
-                    if (product.dataset.days == "30") {
-                        monthlyPriceElement.textContent = monthlyPriceElement.getAttribute("data-monthly-price");
-                        product.style.display = "block"; // Ensure the product is visible
-                    } else {
-                        product.style.display = "none"; // Hide other products
-                    }
-                }
-            }
+         
         });
     }
 

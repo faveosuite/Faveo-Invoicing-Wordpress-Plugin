@@ -1,8 +1,8 @@
-# Agora Invoicing WordPress Plugin
+# Faveo Agora Invoicing
 
-## About the Agora Invoicing WordPress Plugin
+## About the Faveo Agora Invoicing
 
-The Agora Invoicing WordPress plugin enables you to integrate [Agora Invoicing Software](https://github.com/ladybirdweb/agora-invoicing-community) with your WordPress website. With this plugin, you can easily display product information, pricing, and other invoicing details directly on your site, improving the user experience and simplifying your invoicing process.
+The Faveo Agora Invoicing enables you to integrate [Agora Invoicing Software](https://github.com/ladybirdweb/agora-invoicing-community) with your WordPress website. With this plugin, you can easily display product information, pricing, and other invoicing details directly on your site, improving the user experience and simplifying your invoicing process.
 
 Developed by **[Ladybird Web Solution Pvt Ltd](http://www.ladybirdweb.com/)**, this plugin was launched in **November 2024** to provide a seamless connection between Agora Invoicing and WordPress.
 
