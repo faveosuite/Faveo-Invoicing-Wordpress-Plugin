@@ -63,9 +63,17 @@ function fhai_calling($atts) {
         $html .= '</center>';
     }
     
-    // $scrollable_class = count($products_data['products']) > 5 ? 'scrollable' : '';
-    // $html .= '<div class="products-wrapper ' . $scrollable_class . '"';
-    $html .= '<div class="products-wrapper" ';
+    $all_status_not_one = true;
+    foreach ($products_data['products'] as $product) {
+        if ($product['status'] == "1") {
+            $all_status_not_one = false;
+            break;
+        }
+    }
+    
+    $scrollable_class = (count($products_data['products']) > 5 && $all_status_not_one) ? 'scrollable' : '';
+    $html .= '<div class="products-wrapper ' . $scrollable_class . '"';
+    // $html .= '<div class="products-wrapper" ';
     $html .= ($group_id == 11) ? ' style="margin-left:255px;"' : '';
     $html .= '>';
 
