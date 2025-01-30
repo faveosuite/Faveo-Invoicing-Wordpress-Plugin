@@ -1,53 +1,54 @@
-<h3>About Agora Invoicing Wordpress plugin</h3>
+# Faveo Agora Invoicing
 
-This wordpress plugin is desgined to work with Agora Invoicing software and shows information about the product and pricing on wordpress website.
+## About the Faveo Agora Invoicing
 
-Agora Invoicing Wordpress plugin is designed and developed by <a href="http://www.ladybirdweb.com/" target="_blank">Ladybird Web Solution Pvt Ltd</a>, and was launched on November 2024.
+The Faveo Agora Invoicing enables you to integrate [Agora Invoicing Software](https://github.com/ladybirdweb/agora-invoicing-community) with your WordPress website. With this plugin, you can easily display product information, pricing, and other invoicing details directly on your site, improving the user experience and simplifying your invoicing process.
 
-Requirements
---------------------------
-To run this plugin, below are minimum requirement:
+Developed by **[Ladybird Web Solution Pvt Ltd](http://www.ladybirdweb.com/)**, this plugin was launched in **November 2024** to provide a seamless connection between Agora Invoicing and WordPress.
 
-* Wordpress Version: 6.6.2+
+## Requirements
 
-Installation Guide
---------------------------
-Upload the plugin to your blog, Activate it, then enter your Agora Invoicing key
+To run this plugin, ensure that your website meets the following minimum requirements:
 
-Credits
---------------------------
-* Wordpress
-* Agora Invoicing
+- **WordPress Version**: 6.6.2 or higher
 
-Plugin Features
---------------------------
-https://github.com/ladybirdweb/Agora-Invoicing-Wordpress-Plugin/wiki
+## Installation Guide
 
-Error Reporting
---------------------------
-Plugin uses [Bugsnag](https://www.bugsnag.com/) to monitor application stability in a production environment. It helps us provide bug fixes and feature updates after analyzing the logs and crash reports for the application. **If you are customizing the application in a development environment, we request you to disable this error reporting.** This will allow us to ignore the errors that occur during your development cycle, enabling us to focus more on the exceptions/bugs occurring in the live system of other users in the Faveo community. It can be easily disabled from the "Error logs and debugging" option in the admin panel or by updating your app environment to development in `.env`.
+1. Download the plugin file.
+2. Upload the plugin to your WordPress site via the **Plugins** menu.
+3. Activate the plugin through the WordPress admin panel.
+4. Enter your **Agora Invoicing API key** to configure the plugin.
 
-You can still report issues on our [GitHub Issue page](https://github.com/ladybirdweb/Agora-Invoicing-Wordpress-Plugin/issues) by providing proper information about the changes you are trying to implement. We assure you that the Faveo community will help you, and your customization can be a part of the Faveo application if it follows our contributing guidelines.
+## Plugin Features
 
-# Security Policy
+- **Integration with Agora Invoicing**: Display product and pricing information from Agora Invoicing on your WordPress website.
+- **Customizable Settings**: Tailor the display options to fit your site's design and requirements.
+- **Automatic Updates**: Stay up-to-date with the latest features and security patches.
 
-## Supported Versions
+## Error Reporting & Support
 
-Check-mark versions are supported with security patches.
+If you encounter issues or need assistance, please report them on our [GitHub Issues page](https://github.com/ladybirdweb/Agora-Invoicing-Wordpress-Plugin/issues). When reporting an issue, please provide detailed information about the changes you are trying to implement, so we can assist you more effectively.
 
-| Version   | Supported          |
-|-----------| ------------------ |
-| 1.0.0   | :white_check_mark: |
-| < 1.0.0 | :x:                |
 
-## Supported Updates
+## Security Policy
 
-Security updates will be released once a month. If it's high priority, we will make it twice a month
+### Supported Versions
 
-## Reporting a Vulnerability
+| Version   | Supported |
+|-----------|-----------|
+| 1.0.0     | ✅        |
+| < 1.0.0   | ❌        |
 
-Please report (suspected) security vulnerabilities to support@faveohelpdesk.com. You will receive a response from us within 48 hours. If the issue is confirmed, we will release a patch as soon as possible, depending on its complexity, but historically, this has been within a few days.
+### Security Updates
 
-Help
---------------------------
-Visit the <a href="https://github.com/ladybirdweb/Agora-Invoicing-Wordpress-Plugin/issues">issue</a> page. If you'd like professional help, commercial support is available; please email us through the <a href="https://billing.faveohelpdesk.com/contact-us/">contact form</a>.
+- Security updates are released on a monthly basis.
+- Critical updates may be released bi-weekly, depending on the urgency.
+
+### Reporting a Vulnerability
+
+If you suspect a security vulnerability, please report it to **support@faveohelpdesk.com**. You can expect a response within 48 hours. If the vulnerability is confirmed, we will work to release a patch as soon as possible—typically within a few days, depending on the complexity of the issue.
+
+## Credits
+
+- **WordPress**: The platform that powers millions of websites worldwide.
+- **Agora Invoicing**: The invoicing software integrated by this plugin to streamline your billing process.
