@@ -1,296 +1,106 @@
-/*FAVEO AGORA INVOICING STYLES*/
+<?php
+// Add a menu item to the admin panel
+add_action('admin_menu', 'fhai_menu');
 
-.helpdesk-products {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.helpdesk-product {
-    border: 1px solid #ccc;
-    padding: 20px;
-    /*width: 300px;*/
-}
-
-.helpdesk-product img {
-    max-width: 100%;
-    height: auto;
+function fhai_menu() {
+    add_menu_page(
+        'Agora Invoicing Settings',
+        'Agora Invoicing',
+        'manage_options',
+        'agora-invoicing-settings',
+        'fhai_settings_page',
+        'dashicons-admin-generic'
+    );
 }
 
-/* PRICING product-style-1*/
-.packagess {
-  /*margin: 10px;*/
-  width: 205px;
-  padding-bottom: 1.5em;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  flex-wrap: wrap;
-  color: #000;
-	font-family:Open Sans,Arial,Helvetica,sans-serif;
-}
-.containerr {
-  width: 100%;
+function fhai_settings_page() {
+    ?>
+    <div class="wrap">
+        <h1>Agora Invoicing Settings</h1>
+        <?php settings_errors(); ?>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('fhai_settings_group');
+            do_settings_sections('agora-invoicing-settings');
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
 }
 
-.packagess >h1{
-	margin: 15px 10px 10px;
-	font-size:14px;
-	color:#fff;
-	font-weight: 700;
-}
-.packagess >h2{
-	font-size:26px;
-		color:#fff;
-	font-weight: 600;
-	margin-top:20px
-}
-.packagess >h3{
-	color:#fff;
-	margin-top:-10px
-}
+// Register the settings
+add_action('admin_init', 'fhai_settings_init');
 
-.product-pricing >h1{
-	padding: 10px 0px 20px !important;
-	font-size:1.4em !important;
-	font-weight: 700 !important;
-	height:30px;
-}
-.product-pricing >h2{
-	font-size:2.7rem ;
-	font-weight: 600 !important;
-	margin-top:10px !important;
-}
-.original-price{
-    text-decoration: line-through;
-    /*color: gray;*/
-     opacity:0.6;
-    margin-top: -20px;
-    font-size: 17px;
-}
-.price_descriptionn{
-	margin-top:-10px !important;
-}
-.description ul{
-    list-style-image: url('../assets/images/checkicon-new.png');
+function fhai_settings_init() {
+    // Register the API URL setting with a custom validation function
+    register_setting('fhai_settings_group', 'fhai_api_url', 'fhai_validate_api_url');
+        register_setting('fhai_settings_group', 'fhai_custom_sales_url', 'fhai_validate_custom_sales_url');
+
+    add_settings_section(
+        'fhai_settings_section',
+        'API Settings',
+        'fhai_settings_section_callback',
+        'agora-invoicing-settings'
+    );
+
+    add_settings_field(
+        'fhai_api_url',
+        'API URL',
+        'fhai_api_url_callback',
+        'agora-invoicing-settings',
+        'fhai_settings_section'
+    );
     
-    text-align:left;
-    margin-top:20px;
+     add_settings_field(
+        'fhai_custom_sales_url',
+        'Custom Sales URL',
+        'fhai_custom_sales_url_callback',
+        'agora-invoicing-settings',
+        'fhai_settings_section'
+    );
 }
-.description li{
-    font-size: 14px;
-  padding-inline-start: 0;
-  padding-bottom: 10px !important;
-	color:#777777;
-	margin-left: 9px;
-	margin-top:12px;
+
+function fhai_settings_section_callback() {
+    echo 'Enter the API URL for Agora Invoicing.';
+}
+
+function fhai_api_url_callback() {
+    $api_url = get_option('fhai_api_url');
+    echo '<input type="text" id="fhai_api_url" name="fhai_api_url" value="' . esc_attr($api_url) . '" size="50" />';
+}
+
+function fhai_custom_sales_url_callback() {
+    $custom_sales_url = get_option('fhai_custom_sales_url');
+    echo '<input type="text" id="fhai_custom_sales_url" name="fhai_custom_sales_url" value="' . esc_attr($custom_sales_url) . '" size="50" />';
 }
 
 
-.product-container{
-    margin: 5px;
-    box-shadow: 3px 4px 5px 2px #c7c7c7;
-        padding: 10px 10px 10px 10px;
+// Custom validation function for the API URL
+function fhai_validate_api_url($input) {
+    if (empty($input) || !filter_var($input, FILTER_VALIDATE_URL)) {
+        add_settings_error(
+            'fhai_api_url',
+            'fhai_invalid_url',
+            'Please add a valid URL',
+            'error'
+        );
+        return get_option('fhai_api_url');
+    }
+    return $input;
 }
 
-.products-wrapper{
-    display: -webkit-box !important;
-    text-align:center;
-    margin-top:40px;
+// Custom validation function for the Custom Sales URL
+function fhai_validate_custom_sales_url($input) {
+    if (empty($input) || !filter_var($input, FILTER_VALIDATE_URL)) {
+        add_settings_error(
+            'fhai_custom_sales_url',
+            'fhai_invalid_sales_url',
+            'Please add a valid Custom Sales URL',
+            'error'
+        );
+        return get_option('fhai_custom_sales_url');
+    }
+    return $input;
 }
-.product-pricing{
-    height:240px;
-    background:transparent !important;
-}
-
-/* Toggle Switch Styles */
-.toggle-wrapper {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    width: 200px; /* Adjust the width as needed */
-}
-
-.toggle-labels {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    justify-content: space-between;
-}
-
-.toggle-label {
-    font-size: 16px;
-    color: #333;
-}
-
-/* Toggle Switch Styles */
-.toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 30px;
-}
-
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 30px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 22px;
-    width: 22px;
-    border-radius: 50%;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-}
-
-input:checked + .slider {
-    background-color: #2196F3;
-}
-
-input:checked + .slider:before {
-    transform: translateX(30px);
-}
-
-
-/*Product's backgroud colors-  needs to be removed after recieving the colors from billing*/
-.product-styles-group1 {
-    background: linear-gradient(rgb(229, 243, 255), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
-}
-.product-styles-group2 {
-    background: linear-gradient(rgb(255, 221, 199), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
-}
-.product-styles-group3 {
-    background: linear-gradient(rgb(193, 254, 215), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
-    /*margin-top:-33px;*/
-}
-.product-styles-group4 {
-    background: linear-gradient(rgb(238, 229, 252), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
-}
-.product-styles-group5 {
-    background: linear-gradient(rgb(252, 217, 215), rgb(255, 255, 255), rgb(255, 255, 255)) !important;
-}
-.popular-ribbon {
-    --f: 10px;
-    --r: 12px;
-    --t: 0px;
-        height: 25px;
-    margin-left: 60px;
-    margin-right: -10px;
-    position: relative;
-    inset: var(--t) calc(-1* var(--f)) auto auto;
-    padding: 3px 10px var(--f) calc(10px + var(--r));
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--f)), calc(100% - var(--f)) 100%, calc(100% - var(--f)) calc(100% - var(--f)), 0 calc(100% - var(--f)), var(--r) calc(50% - var(--f) / 2));
-    background: #0084e4;
-    box-shadow: 0 calc(-1* var(--f)) 0 inset #0005;
-    color: #ffffff;
-    font-size:14px;
-    font-weight:500;
-}
-/*Product's backgroud colors-  needs to be removed after recieving the colors from billing*/
-
-
-@media screen and (max-width: 480px) {
- .products-wrapper {
-     display: block !important; 
-     margin-left: 0 !important;
-}
-.packagess{
-        width: 300px;
-}
-}
-
-
-/* Tooltip container */
-.description li {
-    position: relative;
-    cursor: default;
-    
-}
-/*.description li[title] {*/
-.description p {
-    display: inline;
-    text-decoration:underline;
-text-decoration-style: dotted;
-}
-.description p:hover {
-    text-decoration:underline;
-    cursor: pointer;
-}
-
-/* Tooltip text */
-.description li[title]::after {
-    content: attr(title);
-    position: absolute;
-    top: 22px;
-    left: -10px;
-    visibility: hidden;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    border-radius: 5px;
-    padding: 5px;
-    z-index: 1;
-    opacity: 0;
-    transition: opacity 0.3s;
-    width: max-content;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Show the tooltip text when hovering over the list item */
-.description li[title]:hover::after {
-    visibility: visible;
-    opacity: 1;
-}
-/* Show the tooltip text when hovering over the list item */
-.description li:hover::after {
-    visibility: none;
-    opacity: 1;
-}
-
- /*Arrow for the tooltip */
-.description li[title]::before {
-    content: "\f00c";
-    content:"";
-    position: absolute;
-       top: 13px;
-    left: 0px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #333 transparent;
-    visibility: hidden;
-    z-index: 1;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-/* Show the arrow when hovering over the list item */
-.description li[title]:hover::before {
-    visibility: visible;
-    opacity: 1;
-}
-.products-wrapper.scrollable {
-    /*max-height: 600px;*/
-    overflow-x: scroll;
-}
+?>
