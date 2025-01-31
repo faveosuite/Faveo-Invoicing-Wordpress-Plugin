@@ -3,7 +3,7 @@ Contributors: ladybirdweb
 Tags: invoicing, API, pricing
 Requires at least: 5.0
 Tested up to: 6.7
-Stable tag: 1.1.6
+Stable tag: 1.1.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,13 +29,16 @@ Go to Settings -> Agora Invoicing and enter the API URL.
 
 == Changelog ==
 
-= 1.0 =
+= 1.1.9 =
+* Latest release.
+
+= 1.0.0 =
 * Initial release.
 
 == Upgrade Notice ==
 
-= 1.0 =
+= 1.0.0 =
 * Initial release.
 
-= 1.1.6 =
+= 1.1.9 =
 * Latest release.
