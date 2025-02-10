@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Faveo Agora Invoicing
+ * Plugin Name: Agora Invoicing Plugin
  * Description: This plugin pulls product pricing, Description/Details, currency, and order URL from the Agora invoicing web application.
  * Version: 1.2.8
  * Author: Ladybird Web Solution Pvt Ltd
