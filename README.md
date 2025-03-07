@@ -4,7 +4,7 @@
 
 The Faveo Invoicing WordPress plugin enables you to integrate [Faveo Invoicing Software](https://github.com/ladybirdweb/faveo-invoicing-community) with your WordPress website. With this plugin, you can easily display product information, pricing, and other invoicing details directly on your site, improving the user experience and simplifying your invoicing process.
 
-[Wordpress plugin website](https://wordpress.org/plugins/faveo-faveo-invoicing)
+[Wordpress plugin website](https://wordpress.org/plugins/faveo-agora-invoicing)
 
 Developed by **[Ladybird Web Solution Pvt Ltd](http://www.ladybirdweb.com/)**, this plugin was launched in **November 2024** to provide a seamless connection between Faveo Invoicing and WordPress.
 
@@ -53,4 +53,4 @@ If you suspect a security vulnerability, please report it to **support@faveohelp
 ## Credits
 
 - **WordPress**: The platform that powers millions of websites worldwide.
-- ** Faveo Invoicing**: The invoicing software integrated by this plugin to streamline your billing process.
+- **Faveo Invoicing**: The invoicing software integrated by this plugin to streamline your billing process.
