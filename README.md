@@ -29,7 +29,7 @@ To run this plugin, ensure that your website meets the following minimum require
 
 ## Error Reporting & Support
 
-If you encounter issues or need assistance, please report them on our [GitHub Issues page](https://github.com/ladybirdweb/Faveo-Invoicing-Wordpress-Plugin/issues). When reporting an issue, please provide detailed information about the changes you are trying to implement, so we can assist you more effectively.
+If you encounter issues or need assistance, please report them on our [GitHub Issues page](https://github.com/faveosuite/Faveo-Invoicing-Wordpress-Plugin). When reporting an issue, please provide detailed information about the changes you are trying to implement, so we can assist you more effectively.
 
 
 ## Security Policy
