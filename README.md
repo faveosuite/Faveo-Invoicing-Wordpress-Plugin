@@ -2,11 +2,11 @@
 
 ## About the Faveo Invoicing WordPress Plugin
 
-The Faveo Invoicing WordPress plugin enables you to integrate [Faveo Invoicing Software](https://github.com/ladybirdweb/faveo-invoicing-community) with your WordPress website. With this plugin, you can easily display product information, pricing, and other invoicing details directly on your site, improving the user experience and simplifying your invoicing process.
+The Faveo Invoicing WordPress plugin enables you to integrate [Faveo Invoicing Software](https://github.com/faveosuite/faveo-invoicing-community) with your WordPress website. With this plugin, you can easily display product information, pricing, and other invoicing details directly on your site, improving the user experience and simplifying your invoicing process.
 
 [Wordpress plugin website](https://wordpress.org/plugins/faveo-agora-invoicing)
 
-Developed by **[Ladybird Web Solution Pvt Ltd](http://www.ladybirdweb.com/)**, this plugin was launched in **November 2024** to provide a seamless connection between Faveo Invoicing and WordPress.
+Developed by **[Ladybird Web Solution Pvt Ltd](https://www.faveohelpdesk.com/)**, this plugin was launched in **November 2024** to provide a seamless connection between Faveo Invoicing and WordPress.
 
 ## Requirements
 
@@ -29,7 +29,7 @@ To run this plugin, ensure that your website meets the following minimum require
 
 ## Error Reporting & Support
 
-If you encounter issues or need assistance, please report them on our [GitHub Issues page](https://github.com/ladybirdweb/Faveo-Invoicing-Wordpress-Plugin/issues). When reporting an issue, please provide detailed information about the changes you are trying to implement, so we can assist you more effectively.
+If you encounter issues or need assistance, please report them on our [GitHub Issues page](https://github.com/faveosuite/Faveo-Invoicing-Wordpress-Plugin). When reporting an issue, please provide detailed information about the changes you are trying to implement, so we can assist you more effectively.
 
 
 ## Security Policy
