@@ -107,7 +107,7 @@ function fhai_calling($atts) {
 
     $html = '';
 
-    // Show toggle if all products have status as 1
+    // Show toggle if all products have status 1
     $all_status_one = true;
     foreach ($products_data['products'] as $product) {
         if ($product['status'] !== "1") {
@@ -138,6 +138,8 @@ function fhai_calling($atts) {
     foreach ($products_data['products'] as $product) {
         // Styles by product name
         $product_styles_group1 = $product_styles_group2 = $product_styles_group3 = $product_styles_group4 = $product_styles_group5 = '';
+        $default_style_class = '';
+
         if (!empty($product['pricing-background-color'])) {
             $background_color_style = 'style="background-color: ' . esc_attr($product['pricing-background-color']) . ';"';
         } else {
@@ -146,6 +148,11 @@ function fhai_calling($atts) {
             $product_styles_group3 = in_array($product['name'], ['Helpdesk SME ', 'ServiceDesk SME', 'Helpdesk SME (Recurring)', 'ServiceDesk SME (Recurring)', 'Faveo Cloud Helpdesk SME', 'Faveo Cloud ServiceDesk SME']) ? ' product-styles-group3' : '';
             $product_styles_group4 = in_array($product['name'], ['Helpdesk Enterprise', 'Helpdesk Enterprise (Recurring)', 'ServiceDesk Enterprise', 'ServiceDesk Enterprise (Recurring)', 'Faveo Cloud Helpdesk Enterprise', 'Faveo Cloud ServiceDesk Enterprise']) ? ' product-styles-group4' : '';
             $product_styles_group5 = in_array($product['name'], ['Helpdesk Enterprise Pro', 'ServiceDesk Enterprise Pro']) ? ' product-styles-group5' : '';
+
+            // ✅ Apply default style if no group styles matched
+            if (!$product_styles_group1 && !$product_styles_group2 && !$product_styles_group3 && !$product_styles_group4 && !$product_styles_group5) {
+                $default_style_class = ' product-styles-default';
+            }
         }
 
         $monthly_price = floatval($product['add_price']);
@@ -164,8 +171,10 @@ function fhai_calling($atts) {
             : number_format($effective_price, 0);
 
         // Product container
-        $html .= '<div class="product-container ' . esc_attr($atts['style']) . ($product['highlight'] == 1 ? ' highlighted-product-container' : '') 
-            . $product_styles_group1 . $product_styles_group2 . $product_styles_group3 . $product_styles_group4 . $product_styles_group5 . '" 
+        $html .= '<div class="product-container ' . esc_attr($atts['style']) . 
+            ($product['highlight'] == 1 ? ' highlighted-product-container' : '') 
+            . $product_styles_group1 . $product_styles_group2 . $product_styles_group3 
+            . $product_styles_group4 . $product_styles_group5 . $default_style_class . '" 
             data-group="' . esc_attr($group_id) . '" 
             data-days="' . esc_attr($product['days']) . '" 
             data-monthly="' . esc_attr($monthly_price) . '" 
@@ -197,13 +206,11 @@ function fhai_calling($atts) {
 
             // ✅ Show original/strike-through pricing
             if ($offer_price > 0 && $all_status_one) {
-                // When toggle group exists
                 $html .= '<p class="original-price" 
                             data-monthly-orig="' . esc_attr($monthly_price) . '" 
                             data-yearly-orig="' . esc_attr($yearly_price) . '"></p>';
             } elseif ($offer_price > 0 && !$all_status_one) {
-                // When only one-time group exists
-                $original_price = $monthly_price; // base one-time price
+                $original_price = $monthly_price;
                 $formatted_orig = ($currency_code === 'INR' || $country_code === 'IN')
                     ? indian_number_format($original_price)
                     : number_format($original_price, 0);
@@ -216,24 +223,23 @@ function fhai_calling($atts) {
 
         $html .= '</div>'; // product-pricing
 
-       $description_with_tooltips = preg_replace_callback(
-    '/<li([^>]*)>(.*?)<\/li>/i',
-    function($matches) {
-        $attributes = $matches[1]; // original <li> attributes
-        $inner_html = $matches[2]; // inner content (may contain <strong> etc.)
+        // ✅ Description with tooltips
+        $description_with_tooltips = preg_replace_callback(
+            '/<li([^>]*)>(.*?)<\/li>/i',
+            function($matches) {
+                $attributes = $matches[1];
+                $inner_html = $matches[2];
 
-        // Extract title attribute if present
-        preg_match('/title="([^"]*)"/i', $attributes, $title_match);
-        $tooltip = $title_match[1] ?? wp_strip_all_tags($inner_html);
+                preg_match('/title="([^"]*)"/i', $attributes, $title_match);
+                $tooltip = $title_match[1] ?? wp_strip_all_tags($inner_html);
 
-        return '<li data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="' 
-                . esc_attr($tooltip) . '">' . $inner_html . '</li>';
-    },
-    $product['description']
-);
+                return '<li data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="' 
+                        . esc_attr($tooltip) . '">' . $inner_html . '</li>';
+            },
+            $product['description']
+        );
 
-$html .= '<div class="description">' . wp_kses_post($description_with_tooltips) . '</div>';
-
+        $html .= '<div class="description">' . wp_kses_post($description_with_tooltips) . '</div>';
 
         $html .= '</div>'; // packagess
         $html .= '</div>'; // additional-container
