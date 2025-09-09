@@ -4,10 +4,10 @@ add_action('admin_menu', 'fhai_menu');
 
 function fhai_menu() {
     add_menu_page(
-        'Agora Invoicing Settings',
-        'Agora Invoicing',
+        'Faveo Invoicing Settings',
+        'Faveo Invoicing',
         'manage_options',
-        'agora-invoicing-settings',
+        'faveo-invoicing-settings',
         'fhai_settings_page',
         'dashicons-admin-generic'
     );
@@ -16,12 +16,12 @@ function fhai_menu() {
 function fhai_settings_page() {
     ?>
     <div class="wrap">
-        <h1>Agora Invoicing Settings</h1>
+        <h1>Faveo Invoicing Settings</h1>
         <?php settings_errors(); ?>
         <form method="post" action="options.php">
             <?php
             settings_fields('fhai_settings_group');
-            do_settings_sections('agora-invoicing-settings');
+            do_settings_sections('faveo-invoicing-settings');
             submit_button();
             ?>
         </form>
@@ -41,14 +41,14 @@ function fhai_settings_init() {
         'fhai_settings_section',
         'API Settings',
         'fhai_settings_section_callback',
-        'agora-invoicing-settings'
+        'faveo-invoicing-settings'
     );
 
     add_settings_field(
         'fhai_api_url',
         'API URL',
         'fhai_api_url_callback',
-        'agora-invoicing-settings',
+        'faveo-invoicing-settings',
         'fhai_settings_section'
     );
     
@@ -56,13 +56,13 @@ function fhai_settings_init() {
         'fhai_custom_sales_url',
         'Custom Sales URL',
         'fhai_custom_sales_url_callback',
-        'agora-invoicing-settings',
+        'faveo-invoicing-settings',
         'fhai_settings_section'
     );
 }
 
 function fhai_settings_section_callback() {
-    echo 'Enter the API URL for Agora Invoicing.';
+    echo 'Enter the API URL for Faveo Invoicing.';
 }
 
 function fhai_api_url_callback() {
