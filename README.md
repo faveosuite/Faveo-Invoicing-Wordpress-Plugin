@@ -12,7 +12,7 @@ Developed by **[Ladybird Web Solution Pvt Ltd](https://www.faveohelpdesk.com/)**
 
 To run this plugin, ensure that your website meets the following minimum requirements:
 
-- **WordPress Version**: 6.7 or higher
+- **WordPress Version**: 6.8 or higher
 
 ## Installation Guide
 
@@ -37,8 +37,8 @@ If you encounter issues or need assistance, please report them on our [GitHub Is
 
 | Version   | Supported |
 |-----------|-----------|
-| 1.3.5     | ✅        |
-| < 1.3.5   | ❌        |
+| 1.3.6     | ✅        |
+| < 1.3.6   | ❌        |
 
 ### Security Updates
 
