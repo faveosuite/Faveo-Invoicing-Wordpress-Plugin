@@ -16,14 +16,22 @@ function fhai_get_user_ip() {
 }
 
 
-// Get country from IP using ip-api.com
+// Get country from IP using ipapi.co (secure HTTPS)
 function fhai_get_country_from_ip($ip) {
-    $response = wp_remote_get("http://ip-api.com/json/{$ip}?fields=countryCode");
+    // Fallback for localhost testing
+    if ($ip === '127.0.0.1' || $ip === '::1') {
+        return 'US';
+    }
+
+    $response = wp_remote_get("https://ipapi.co/{$ip}/json/");
     if (is_wp_error($response)) {
         return 'US'; // fallback
     }
+
     $data = json_decode(wp_remote_retrieve_body($response), true);
-    return !empty($data['countryCode']) ? strtoupper($data['countryCode']) : 'US';
+
+    // ipapi.co returns "country" instead of "countryCode"
+    return !empty($data['country']) ? strtoupper($data['country']) : 'US';
 }
 
 // Currency symbol mapping by code
@@ -144,8 +152,8 @@ function fhai_calling($atts) {
             $background_color_style = 'style="background-color: ' . esc_attr($product['pricing-background-color']) . ';"';
         } else {
             $product_styles_group1 = in_array($product['name'], ['Helpdesk Freelancer', 'ServiceDesk Freelancer', 'Faveo Cloud HelpDesk', 'Support service', 'Customization', 'Faveo Upgrade', 'Install service']) ? ' product-styles-group1' : '';
-            $product_styles_group2 = in_array($product['name'], ['Helpdesk Startup', 'Servicedesk Startup', 'Helpdesk Startup (Recurring)', 'ServiceDesk Startup (Recurring)', 'Faveo Cloud Helpdesk Startup', 'Faveo Cloud ServiceDesk  Startup']) ? ' product-styles-group2' : '';
-            $product_styles_group3 = in_array($product['name'], ['Helpdesk SME ', 'ServiceDesk SME', 'Helpdesk SME (Recurring)', 'ServiceDesk SME (Recurring)', 'Faveo Cloud Helpdesk SME', 'Faveo Cloud ServiceDesk SME']) ? ' product-styles-group3' : '';
+            $product_styles_group2 = in_array($product['name'], ['Helpdesk Startup', 'Servicedesk Startup', 'Helpdesk Startup (Recurring)', 'ServiceDesk Startup (Recurring)', 'Faveo Cloud Helpdesk Startup', 'Faveo Cloud ServiceDesk Startup']) ? ' product-styles-group2' : '';
+            $product_styles_group3 = in_array($product['name'], ['Helpdesk SME', 'ServiceDesk SME', 'Helpdesk SME (Recurring)', 'ServiceDesk SME (Recurring)', 'Faveo Cloud Helpdesk SME', 'Faveo Cloud ServiceDesk SME']) ? ' product-styles-group3' : '';
             $product_styles_group4 = in_array($product['name'], ['Helpdesk Enterprise', 'Helpdesk Enterprise (Recurring)', 'ServiceDesk Enterprise', 'ServiceDesk Enterprise (Recurring)', 'Faveo Cloud Helpdesk Enterprise', 'Faveo Cloud ServiceDesk Enterprise']) ? ' product-styles-group4' : '';
             $product_styles_group5 = in_array($product['name'], ['Helpdesk Enterprise Pro', 'ServiceDesk Enterprise Pro']) ? ' product-styles-group5' : '';
 
