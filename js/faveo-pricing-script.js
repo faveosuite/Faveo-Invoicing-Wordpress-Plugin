@@ -4,8 +4,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (str === null || str === undefined) return null;
     const s = String(str).trim().toLowerCase();
     if (!s || s === 'custom') return null;
-    const n = s.replace(/[^0-9.]/g, '');
-    return n ? parseFloat(n) : null;
+    const clean = s.replace(/,/g, ''); 
+    if (!/^\d*(\.\d+)?$/.test(clean)) return null;
+    return parseFloat(clean);
   };
 
   const formatMoney = (num, currency) => {
