@@ -26,7 +26,7 @@ require_once FHAI_DIR . 'includes/faveo-pricing-functions.php';
 add_action('wp_enqueue_scripts', 'fhai_data_enqueue_scripts');
 
 function fhai_data_enqueue_scripts() {
-    wp_enqueue_style('api-data-style', FHAI_URL . 'css/style.css', array(), '1.0'); // Set version to 1.0
+    wp_enqueue_style('api-data-style', FHAI_URL . 'css/style.css', array(), '1.0'); 
     wp_enqueue_script('api-data-script', FHAI_URL . 'js/faveo-pricing-script.js', array('jquery'), '1.0', true);
 }
 
