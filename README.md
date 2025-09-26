@@ -37,8 +37,8 @@ If you encounter issues or need assistance, please report them on our [GitHub Is
 
 | Version   | Supported |
 |-----------|-----------|
-| 1.3.8     | ✅        |
-| < 1.3.8   | ❌        |
+| 1.3.9     | ✅        |
+| < 1.3.9   | ❌        |
 
 ### Security Updates
 
