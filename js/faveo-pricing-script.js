@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-  
+
   const parseMoney = (str) => {
     if (str === null || str === undefined) return null;
     const s = String(str).trim().toLowerCase();
@@ -23,9 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
     el.style.display = show ? '' : 'none';
   };
 
-
-  // Pricing toggle logic
-
   const toggles = document.querySelectorAll('.pricing-toggle');
   const productCards = document.querySelectorAll('.product-container');
 
@@ -48,13 +45,13 @@ document.addEventListener('DOMContentLoaded', function () {
       const monthlyOrig = parseMoney(originalStrike?.dataset.monthlyOrig || '');
       const yearlyOrig = parseMoney(originalStrike?.dataset.yearlyOrig || '');
 
-      // Hide plans which have 14-days time period
+      // Hide 14-day plans
       if (days === 14) {
         showEl(card, false);
         return;
       }
 
-      // Displaying Custom Pricing products on both Monthly and Yearly pricing plans 
+      // Custom Pricing
       const isCustomPricing =
         String(monthlyAttr).toLowerCase().includes('custom') ||
         String(yearlyAttr).toLowerCase().includes('custom') ||
@@ -62,34 +59,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (isCustomPricing) {
         priceEl.textContent = 'Custom Pricing';
-        if (yearlyMode) {
-          // Show only yearly custom plans
-          showEl(card, days >= 365);
-        } else {
-          // Show only monthly custom plans
-          showEl(card, days >= 28 && days < 365);
-        }
+        if (yearlyMode) showEl(card, days >= 365);
+        else showEl(card, days >= 28 && days < 365);
         if (originalStrike) showEl(originalStrike, false);
         return;
       }
 
       if (yearlyMode) {
-        // Yearly: show only >= 365-day products; display per-month (year/12)
+        // Yearly with toggle
         if (days >= 365) {
           let yearlyTotal = parseMoney(yearlyAttr);
-          if (yearlyTotal === null) {
-            showEl(card, false);
-            return;
-          }
+          if (yearlyTotal === null) { showEl(card, false); return; }
 
-          // Show strike-through using original price yearly/12
           if (originalStrike && yearlyOrig) {
             const origPerMonth = yearlyOrig / 12;
             originalStrike.textContent = formatMoney(origPerMonth, currency);
             showEl(originalStrike, true);
           }
 
-          // Apply discount if available
           if (offerPct > 0) yearlyTotal = yearlyTotal - (yearlyTotal * (offerPct / 100));
           const perMonth = yearlyTotal / 12;
 
@@ -99,23 +86,17 @@ document.addEventListener('DOMContentLoaded', function () {
           showEl(card, false);
         }
       } else {
-        // Monthly: show 28–364-day products
+        // Monthly with toggle
         if (days >= 28 && days < 365) {
           let monthlyPrice = parseMoney(monthlyAttr);
-          if (monthlyPrice === null) {
-            showEl(card, false);
-            return;
-          }
+          if (monthlyPrice === null) { showEl(card, false); return; }
 
-          // Showing strike-through using original monthly price
           if (originalStrike && monthlyOrig) {
             originalStrike.textContent = formatMoney(monthlyOrig, currency);
             showEl(originalStrike, true);
           }
 
-          // Apply discount if available
           if (offerPct > 0) monthlyPrice = monthlyPrice - (monthlyPrice * (offerPct / 100));
-
           priceEl.textContent = formatMoney(monthlyPrice, currency);
           showEl(card, true);
         } else {
@@ -125,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Initialize toggles independently
+  // Initialize toggles
   toggles.forEach((toggle) => {
     const groupId = toggle.dataset.group;
     const params = new URLSearchParams(window.location.search);
@@ -139,4 +120,42 @@ document.addEventListener('DOMContentLoaded', function () {
       window.history.replaceState({}, '', `${location.pathname}?${p.toString()}`);
     });
   });
+
+  // ✅ Handle groups with no toggle: show yearly price directly
+  const allGroups = new Set([...productCards].map(card => card.dataset.group));
+  allGroups.forEach(groupId => {
+    const groupToggles = document.querySelectorAll(`.pricing-toggle[data-group="${groupId}"]`);
+    if (groupToggles.length > 0) return; // Skip groups with toggle
+
+    // No toggle → show yearly price
+    productCards.forEach(card => {
+      if (card.dataset.group !== groupId) return;
+
+      const days = parseInt(card.dataset.days || '0', 10) || 0;
+      const priceEl = card.querySelector('.product-pricing h2');
+      if (!priceEl) return;
+      const yearlyAttr = priceEl.getAttribute('data-yearly-price') || '';
+      const offerPct = parseFloat(card.dataset.offer || '0') || 0;
+      const currency = card.dataset.currency || '$';
+      const originalStrike = card.querySelector('.original-price');
+      const yearlyOrig = parseMoney(originalStrike?.dataset.yearlyOrig || '');
+      const yearlyTotal = parseMoney(yearlyAttr);
+
+      if (days >= 365 && yearlyTotal !== null) {
+        let finalPrice = yearlyTotal;
+        if (offerPct > 0) finalPrice = yearlyTotal - (yearlyTotal * (offerPct / 100));
+        priceEl.textContent = formatMoney(finalPrice, currency);
+
+        if (originalStrike && yearlyOrig) {
+          originalStrike.textContent = formatMoney(yearlyOrig, currency);
+          showEl(originalStrike, true);
+        }
+
+        showEl(card, true);
+      } else {
+        showEl(card, false);
+      }
+    });
+  });
+
 });
