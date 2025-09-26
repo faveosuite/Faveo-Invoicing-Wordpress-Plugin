@@ -1,7 +1,6 @@
 <?php
 // Detect user IP
 function fhai_get_user_ip() {
-    $ip = '';
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
         $ip = sanitize_text_field(wp_unslash($_SERVER['HTTP_CLIENT_IP']));
     } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -9,42 +8,44 @@ function fhai_get_user_ip() {
         $ip = trim($ipList[0]);
     } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
         $ip = sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
+    } else {
+        $ip = '';
     }
     return $ip;
 }
 
-// Get country from IP using ipapi.co
+// Get country from IP with fallback
 function fhai_get_country_from_ip($ip) {
-    $default_country = 'US'; // Default fallback country
+    $default_country = 'US';
+
+    // Cloudflare header shortcut
+    if (!empty($_SERVER['HTTP_CF_IPCOUNTRY'])) {
+        return strtoupper($_SERVER['HTTP_CF_IPCOUNTRY']);
+    }
+
+    if (empty($ip)) {
+        return $default_country;
+    }
 
     try {
-        // Skip API call if IP is empty
-        if (empty($ip)) {
-            return $default_country;
-        }
-
-        // Make the API request
         $response = wp_remote_get("https://ipapi.co/{$ip}/json/", array('timeout' => 5));
-
         if (is_wp_error($response)) {
             return $default_country;
         }
 
         $data = json_decode(wp_remote_retrieve_body($response), true);
-
-        // Return country code if found, otherwise default
         return !empty($data['country']) ? strtoupper($data['country']) : $default_country;
-
     } catch (Exception $e) {
-        // In production, silently fail and return default
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Faveo Invoicing: Failed to detect country from IP. ' . $e->getMessage());
+        }
         return $default_country;
     }
 }
 
-// Currency symbol by code
+// Currency symbol mapping
 function fhai_currency_symbol_combined($key) {
     $map = [
-        // By currency code
         'USD' => '$', 'INR' => '₹', 'GBP' => '£', 'EUR' => '€',
         'CAD' => 'C$', 'AUD' => 'A$', 'NZD' => 'NZ$', 'JPY' => '¥',
         'CNY' => '¥', 'SGD' => 'S$', 'HKD' => 'HK$', 'KRW' => '₩',
@@ -54,8 +55,6 @@ function fhai_currency_symbol_combined($key) {
         'SAR' => '﷼', 'AED' => 'د.إ', 'ILS' => '₪', 'THB' => '฿',
         'IDR' => 'Rp', 'MYR' => 'RM', 'PHP' => '₱', 'VND' => '₫',
         'NGN' => '₦',
-        
-        // By country code (optional, only if country code not in currency codes)
         'US' => '$', 'IN' => '₹', 'GB' => '£', 'EU' => '€', 'CA' => 'C$',
         'AU' => 'A$', 'NZ' => 'NZ$', 'JP' => '¥', 'CN' => '¥', 'SG' => 'S$',
         'HK' => 'HK$', 'KR' => '₩', 'RU' => '₽', 'BR' => 'R$', 'ZA' => 'R',
@@ -68,19 +67,20 @@ function fhai_currency_symbol_combined($key) {
     return $map[$key] ?? '$';
 }
 
-// Format Indian number
+// Format Indian number without rounding
 function indian_number_format($number) {
     $formatter = new \NumberFormatter('en_IN', \NumberFormatter::DECIMAL);
-    return $formatter->format(round($number));
+    return $formatter->format($number); // keep decimals
 }
-
 
 // Template loader
 function fhai_get_template($template_name, $args = array()) {
     $template_path = FHAI_DIR . 'templates/' . $template_name;
 
     if (!file_exists($template_path)) {
-      
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("Faveo Invoicing: Template not found - {$template_name}");
+        }
         return '<p style="color:red;">Template not found.</p>';
     }
 
@@ -110,7 +110,7 @@ function fhai_calling($atts) {
     $api_url = get_option('fhai_api_url');
     if (empty($api_url)) return 'API URL is not set. Please configure it in plugin settings.';
 
-    // products
+    // Get products
     $products_url = $api_url . '?group=' . $group_id . '&country=' . $country_code;
     $products_response = wp_remote_get($products_url, array('method' => 'GET'));
     $products_data = array();
@@ -120,7 +120,7 @@ function fhai_calling($atts) {
 
     if (empty($products_data['products'])) return 'No products available for this group.';
 
-    // If all products have status = 1
+    // Check if all products are active
     $all_status_one = true;
     foreach ($products_data['products'] as $product) {
         if ($product['status'] !== "1") {

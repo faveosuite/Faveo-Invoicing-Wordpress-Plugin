@@ -30,37 +30,38 @@
 
 <?php foreach ($products as $product) : 
 
-    // ===== Product style classes (unchanged) =====
+    // Product style classes
     $product_styles_group1 = $product_styles_group2 = $product_styles_group3 = $product_styles_group4 = $product_styles_group5 = '';
     if (!empty($product['pricing-background-color'])) {
         $background_color_style = 'style="background-color: ' . esc_attr($product['pricing-background-color']) . ';"';
     } else {
-        $product_styles_group1 = in_array($product['name'], ['Helpdesk Freelancer', 'ServiceDesk Freelancer', 'Faveo Cloud HelpDesk', 'Support service', 'Customization', 'Faveo Upgrade', 'Install service']) ? ' product-styles-group1' : '';
-        $product_styles_group2 = in_array($product['name'], ['Helpdesk Startup', 'Servicedesk Startup', 'Helpdesk Startup (Recurring)', 'ServiceDesk Startup (Recurring)', 'Faveo Cloud Helpdesk Startup', 'Faveo Cloud ServiceDesk  Startup']) ? ' product-styles-group2' : '';
-        $product_styles_group3 = in_array($product['name'], ['Helpdesk SME ', 'ServiceDesk SME', 'Helpdesk SME (Recurring)', 'ServiceDesk SME (Recurring)', 'Faveo Cloud Helpdesk SME', 'Faveo Cloud ServiceDesk SME']) ? ' product-styles-group3' : '';
-        $product_styles_group4 = in_array($product['name'], ['Helpdesk Enterprise', 'Helpdesk Enterprise (Recurring)', 'ServiceDesk Enterprise', 'ServiceDesk Enterprise (Recurring)', 'Faveo Cloud Helpdesk Enterprise', 'Faveo Cloud ServiceDesk Enterprise']) ? ' product-styles-group4' : '';
-        $product_styles_group5 = in_array($product['name'], ['Helpdesk Enterprise Pro', 'ServiceDesk Enterprise Pro']) ? ' product-styles-group5' : '';
+        $product_styles_group1 = in_array($product['name'], ['Helpdesk Freelancer','ServiceDesk Freelancer','Faveo Cloud HelpDesk','Support service','Customization','Faveo Upgrade','Install service']) ? ' product-styles-group1' : '';
+        $product_styles_group2 = in_array($product['name'], ['Helpdesk Startup','Servicedesk Startup','Helpdesk Startup (Recurring)','ServiceDesk Startup (Recurring)','Faveo Cloud Helpdesk Startup','Faveo Cloud ServiceDesk  Startup']) ? ' product-styles-group2' : '';
+        $product_styles_group3 = in_array($product['name'], ['Helpdesk SME ','ServiceDesk SME','Helpdesk SME (Recurring)','ServiceDesk SME (Recurring)','Faveo Cloud Helpdesk SME','Faveo Cloud ServiceDesk SME']) ? ' product-styles-group3' : '';
+        $product_styles_group4 = in_array($product['name'], ['Helpdesk Enterprise','Helpdesk Enterprise (Recurring)','ServiceDesk Enterprise','ServiceDesk Enterprise (Recurring)','Faveo Cloud Helpdesk Enterprise','Faveo Cloud ServiceDesk Enterprise']) ? ' product-styles-group4' : '';
+        $product_styles_group5 = in_array($product['name'], ['Helpdesk Enterprise Pro','ServiceDesk Enterprise Pro']) ? ' product-styles-group5' : '';
     }
 
-    // ===== Currency and price logic =====
-    $currency_code = !empty($product['currency']) ? strtoupper($product['currency']) : strtoupper($country_code);
-    $currency_symbol = fhai_currency_symbol_combined($currency_code);
+    // Currency detection
+    $currency_code = !empty($product['currency']) ? strtoupper($product['currency']) : '';
+    $currency_symbol = fhai_currency_symbol_combined($currency_code ?: $country_code);
 
+    // Prices
     $monthly_price = floatval($product['add_price']);
-    $yearly_price = floatval($product['add_price']); // Adjust if API returns yearly separately
+    $yearly_price = floatval($product['add_price']); 
     $offer_price = floatval($product['offer_price'] ?? 0);
 
     $effective_price = $offer_price > 0 ? $monthly_price - ($monthly_price * ($offer_price / 100)) : $monthly_price;
 
-    // Format display price
+    // Format price with decimals
     if (class_exists('NumberFormatter')) {
-        $formatter = new NumberFormatter($currency_code === 'INR' ? 'en_IN' : 'en', NumberFormatter::CURRENCY);
-        $display_price = $formatter->formatCurrency($effective_price, $currency_code);
+        $formatter = new NumberFormatter('en', NumberFormatter::CURRENCY);
+        $display_price = $formatter->formatCurrency($effective_price, $currency_code ?: 'USD');
     } else {
-        $display_price = ($currency_code === 'INR' || $country_code === 'IN') ? indian_number_format($effective_price) : number_format($effective_price, 0);
+        $display_price = ($currency_code === 'INR' || $country_code === 'IN') ? indian_number_format($effective_price) : number_format($effective_price, 2);
     }
 ?>
-    <div class="product-container <?php echo esc_attr($atts['style'] . ($product['highlight'] == 1 ? ' highlighted-product-container' : '') . $product_styles_group1 . $product_styles_group2 . $product_styles_group3 . $product_styles_group4 . $product_styles_group5 ); ?>"
+    <div class="product-container <?php echo esc_attr($atts['style'] . ($product['highlight']==1?' highlighted-product-container':'') . $product_styles_group1 . $product_styles_group2 . $product_styles_group3 . $product_styles_group4 . $product_styles_group5); ?>"
          data-group="<?php echo esc_attr($group_id); ?>"
          data-days="<?php echo esc_attr($product['days']); ?>"
          data-monthly="<?php echo esc_attr($monthly_price); ?>"
@@ -69,11 +70,10 @@
          data-currency="<?php echo esc_attr($currency_symbol); ?>">
 
         <div class="additional-container">
-            <div class="packagess" <?php echo esc_attr($background_color_style ?? ''); ?>>
+            <div class="packagess" <?php echo $background_color_style ?? ''; ?>>
+                <div class="product-pricing <?php echo $product['highlight']==1?'highlighted-product':''; ?>">
 
-                <div class="product-pricing <?php echo $product['highlight'] == 1 ? 'highlighted-product' : ''; ?>">
-
-                    <?php if ($product['highlight'] == 1) : ?>
+                    <?php if ($product['highlight']==1) : ?>
                         <div class="popular-ribbon text-light">Most Popular</div>
                     <?php endif; ?>
 
@@ -87,19 +87,17 @@
                         <h2 style="font-size:28px !important; height:82px !important; line-height:42px; margin-top:30px;">
                             Custom Pricing
                         </h2>
-                        <?php $custom_sales_url = get_option('fhai_custom_sales_url', 'https://www.example.com/'); ?>
+                        <?php $custom_sales_url = get_option('fhai_custom_sales_url','https://www.example.com/'); ?>
                         <a href="<?php echo esc_url($custom_sales_url); ?>" class="purchase-btn">Custom Sales</a>
                     <?php else : ?>
                         <h2 data-monthly-price="<?php echo esc_attr($monthly_price); ?>" data-yearly-price="<?php echo esc_attr($yearly_price); ?>">
-                            <?php echo esc_html($currency_symbol . $display_price); ?>
+                            <?php echo esc_html($display_price); ?>
                         </h2>
 
-                        <?php if ($offer_price > 0 && $all_status_one) : ?>
-                            <p class="original-price" data-monthly-orig="<?php echo esc_attr($monthly_price); ?>" data-yearly-orig="<?php echo esc_attr($yearly_price); ?>"></p>
-                        <?php elseif ($offer_price > 0 && !$all_status_one) : 
-                            $formatted_orig = ($currency_code === 'INR' || $country_code === 'IN') ? indian_number_format($monthly_price) : number_format($monthly_price, 0);
+                        <?php if ($offer_price>0) :
+                            $formatted_orig = ($currency_code === 'INR' || $country_code==='IN') ? indian_number_format($monthly_price) : number_format($monthly_price, 2);
                         ?>
-                            <p class="original-price"><s><?php echo esc_html($currency_symbol . $formatted_orig); ?></s></p>
+                            <p class="original-price"><s><?php echo esc_html($currency_symbol.$formatted_orig); ?></s></p>
                         <?php endif; ?>
 
                         <p class="price-description"><?php echo wp_kses_post($product['price_description']); ?></p>
@@ -109,7 +107,6 @@
                 </div> <!-- product-pricing -->
 
                 <?php
-                // Description with tooltips
                 $description_with_tooltips = preg_replace_callback(
                     '/<li([^>]*)>(.*?)<\/li>/i',
                     function ($matches) {
@@ -130,5 +127,4 @@
     </div> <!-- product-container -->
 
 <?php endforeach; ?>
-
 </div> <!-- products-wrapper -->
