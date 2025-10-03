@@ -46,7 +46,7 @@
 	font-size: 42px !important;
     font-weight: 500 !important;
     margin-top:0px;
-    height:42px !important;
+    height:65px !important;
     color:#141617 !important;
 }
 .packagess >h3{
@@ -201,7 +201,7 @@ input:checked + .slider:before {
     font-weight: 600;
     transition: all 0.3s ease;
     font-size: 15px;
-    width:100% ;
+    width: -webkit-fill-available;
 } 
 .purchase-btn:hover {
   /*filter: brightness(1.1);*/
@@ -378,7 +378,7 @@ background-color:#000 !important;
 
 /* If only 5 products in a group → fit 5 per row */
 .products-wrapper[data-count="5"] .product-container {
-  flex: 1 1 calc(20% - 20px);
+  flex: 1 1 calc(18% - 20px);
 }
 
 /* Responsive adjustments */

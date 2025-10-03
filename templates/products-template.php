@@ -94,7 +94,7 @@
                     <?php if (!empty($product['add_to_contact'])) : ?>
                         <!-- keep data attributes so JS can still read if needed -->
                         <h2 data-monthly-price="<?php echo esc_attr($monthly_price); ?>" data-yearly-price="<?php echo esc_attr($yearly_price); ?>"
-                            style="font-size:30px !important; height:82px !important; line-height:50px; margin-top:30px;">
+                            style="font-size:30px !important; height:100px !important; line-height:50px; margin-top:30px;">
                             Custom Pricing
                         </h2>
                         <?php $custom_sales_url = get_option('fhai_custom_sales_url','https://www.example.com/'); ?>
