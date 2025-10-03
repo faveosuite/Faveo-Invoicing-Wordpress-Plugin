@@ -8,14 +8,19 @@ document.addEventListener('DOMContentLoaded', function () {
     return cleaned === '' ? null : parseFloat(cleaned);
   };
 
-  const formatMoney = (num, currency) => {
+const formatMoney = (num, currency) => {
   if (num === null || isNaN(num)) return (currency || '$') + '0';
+  
   const isINR = String(currency || '').trim() === '₹';
+  const floored = Math.floor(Number(num)); // always round down
+  
   const formatted = isINR
-    ? Math.round(num).toLocaleString('en-IN', { maximumFractionDigits: 0 })
-    : Math.round(num).toLocaleString(undefined, { maximumFractionDigits: 0 });
+    ? floored.toLocaleString('en-IN')
+    : floored.toLocaleString();
+    
   return (currency || '$') + formatted;
 };
+
 
 
   const showEl = (el, show) => { if (el) el.style.display = show ? '' : 'none'; };
@@ -119,20 +124,25 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Initialize toggles (each toggle manages its group)
-  toggles.forEach(toggle => {
-    const groupId = toggle.dataset.group;
-    const params = new URLSearchParams(window.location.search);
-    toggle.checked = params.get(`pricing_group_${groupId}`) === 'yearly';
-    updateGroup(toggle, groupId);
+ // Initialize toggles (each toggle manages its group)
+toggles.forEach(toggle => {
+  const groupId = toggle.dataset.group;
+  const params = new URLSearchParams(window.location.search);
 
-    toggle.addEventListener('change', () => {
-      updateGroup(toggle, groupId);
-      const p = new URLSearchParams(window.location.search);
-      p.set(`pricing_group_${groupId}`, toggle.checked ? 'yearly' : 'monthly');
-      window.history.replaceState({}, '', `${location.pathname}?${p.toString()}`);
-    });
+  // DEFAULT: yearly plan shown
+  const paramValue = params.get(`pricing_group_${groupId}`);
+  toggle.checked = paramValue === null ? true : paramValue === 'yearly';
+
+  updateGroup(toggle, groupId);
+
+  toggle.addEventListener('change', () => {
+    updateGroup(toggle, groupId);
+    const p = new URLSearchParams(window.location.search);
+    p.set(`pricing_group_${groupId}`, toggle.checked ? 'yearly' : 'monthly');
+    window.history.replaceState({}, '', `${location.pathname}?${p.toString()}`);
   });
+});
+
 
   // Initialize groups that don't have a toggle element
   const groupsWithToggle = new Set(toggles.map(t => String(t.dataset.group)));
