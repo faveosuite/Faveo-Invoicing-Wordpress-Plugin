@@ -83,12 +83,12 @@
 }
 
 .description ul{
-    /* list-style-image: url('../assets/images/checkicon-new.png'); */
-    list-style:none;
+    /*list-style-image: url('../assets/images/checkicon-new.png');*/
+    list-style: none;
     text-align:left;
     margin-top:20px;
     padding:10px 10px;
-    margin-left: -15px !important;
+    margin-left: -5px !important;
 }
 .description li{
     font-size: 14px !important;
@@ -374,7 +374,7 @@ background-color:#000 !important;
 
 /* If only 4 products in a group → fit 4 per row */
 .products-wrapper[data-count="4"] .product-container {
-  flex: 1 1 calc(25% - 20px);
+  flex: 1 1 calc(20% - 20px) !important;
 }
 
 /* If only 5 products in a group → fit 5 per row */

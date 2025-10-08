@@ -31,16 +31,27 @@
 <?php foreach ($products as $product) :
 
     // Product styles
-    $product_styles_group1 = $product_styles_group2 = $product_styles_group3 = $product_styles_group4 = $product_styles_group5 = '';
-    if (!empty($product['pricing-background-color'])) {
-        $background_color_style = 'style="background-color: ' . esc_attr($product['pricing-background-color']) . ';"';
+$product_styles_group1 = $product_styles_group2 = $product_styles_group3 = $product_styles_group4 = $product_styles_group5 = $product_styles_default = '';
+
+if (!empty($product['pricing-background-color'])) {
+    $background_color_style = 'style="background-color: ' . esc_attr($product['pricing-background-color']) . ';"';
+} else {
+    if (in_array($product['name'], ['Helpdesk Freelancer','ServiceDesk Freelancer','Faveo Cloud HelpDesk','Support service','Customization','Faveo Upgrade','Install service'])) {
+        $product_styles_group1 = ' product-styles-group1';
+    } elseif (in_array($product['name'], ['Helpdesk Startup','Servicedesk Startup','Helpdesk Startup (Recurring)','ServiceDesk Startup (Recurring)','Faveo Cloud Helpdesk Startup','Faveo Cloud ServiceDesk  Startup'])) {
+        $product_styles_group2 = ' product-styles-group2';
+    } elseif (in_array($product['name'], ['Helpdesk SME ','ServiceDesk SME','Helpdesk SME (Recurring)','ServiceDesk SME (Recurring)','Faveo Cloud Helpdesk SME','Faveo Cloud ServiceDesk SME'])) {
+        $product_styles_group3 = ' product-styles-group3';
+    } elseif (in_array($product['name'], ['Helpdesk Enterprise','Helpdesk Enterprise (Recurring)','ServiceDesk Enterprise','ServiceDesk Enterprise (Recurring)','Faveo Cloud Helpdesk Enterprise','Faveo Cloud ServiceDesk Enterprise'])) {
+        $product_styles_group4 = ' product-styles-group4';
+    } elseif (in_array($product['name'], ['Helpdesk Enterprise Pro','ServiceDesk Enterprise Pro'])) {
+        $product_styles_group5 = ' product-styles-group5';
     } else {
-        $product_styles_group1 = in_array($product['name'], ['Helpdesk Freelancer','ServiceDesk Freelancer','Faveo Cloud HelpDesk','Support service','Customization','Faveo Upgrade','Install service']) ? ' product-styles-group1' : '';
-        $product_styles_group2 = in_array($product['name'], ['Helpdesk Startup','Servicedesk Startup','Helpdesk Startup (Recurring)','ServiceDesk Startup (Recurring)','Faveo Cloud Helpdesk Startup','Faveo Cloud ServiceDesk  Startup']) ? ' product-styles-group2' : '';
-        $product_styles_group3 = in_array($product['name'], ['Helpdesk SME ','ServiceDesk SME','Helpdesk SME (Recurring)','ServiceDesk SME (Recurring)','Faveo Cloud Helpdesk SME','Faveo Cloud ServiceDesk SME']) ? ' product-styles-group3' : '';
-        $product_styles_group4 = in_array($product['name'], ['Helpdesk Enterprise','Helpdesk Enterprise (Recurring)','ServiceDesk Enterprise','ServiceDesk Enterprise (Recurring)','Faveo Cloud Helpdesk Enterprise','Faveo Cloud ServiceDesk Enterprise']) ? ' product-styles-group4' : '';
-        $product_styles_group5 = in_array($product['name'], ['Helpdesk Enterprise Pro','ServiceDesk Enterprise Pro']) ? ' product-styles-group5' : '';
+        // ✅ Default style if product doesn't match any group
+        $product_styles_default = ' product-styles-default';
     }
+}
+
 
     // Currency
     $currency_code = !empty($product['currency']) ? strtoupper($product['currency']) : '';
@@ -65,7 +76,7 @@
     $product_key = isset($product['id']) ? 'p-' . intval($product['id']) : sanitize_title($product['name']);
 
 ?>
-    <div class="product-container <?php echo esc_attr($atts['style'] . ($product['highlight']==1?' highlighted-product-container':'') . $product_styles_group1 . $product_styles_group2 . $product_styles_group3 . $product_styles_group4 . $product_styles_group5); ?>"
+    <div class="product-container <?php echo esc_attr($atts['style'] . ($product['highlight']==1?' highlighted-product-container':'') . $product_styles_group1 . $product_styles_group2 . $product_styles_group3 . $product_styles_group4 . $product_styles_group5 . $product_styles_default); ?>"
          data-product-key="<?php echo esc_attr($product_key); ?>"
          data-group="<?php echo esc_attr($group_id); ?>"
          data-days="<?php echo esc_attr($product['days']); ?>"
