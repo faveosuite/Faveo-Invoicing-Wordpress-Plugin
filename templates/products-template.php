@@ -26,10 +26,11 @@
     </center>
 <?php endif; ?>
 
-<div class="products-wrapper" data-count="<?php echo esc_attr(count($products)); ?>">
+<?php $visible_count = 0; ?>
+<div class="products-wrapper" data-count="0">
 
 <?php foreach ($products as $product) :
-
+$is_hidden = false;
     // Product styles
 $product_styles_group1 = $product_styles_group2 = $product_styles_group3 = $product_styles_group4 = $product_styles_group5 = $product_styles_default = '';
 
@@ -75,7 +76,9 @@ if (!empty($product['pricing-background-color'])) {
     // product key (prefer an ID if available, else sanitized name)
     $product_key = isset($product['id']) ? 'p-' . intval($product['id']) : sanitize_title($product['name']);
 
+ $visible_count++;
 ?>
+    
     <div class="product-container <?php echo esc_attr($atts['style'] . ($product['highlight']==1?' highlighted-product-container':'') . $product_styles_group1 . $product_styles_group2 . $product_styles_group3 . $product_styles_group4 . $product_styles_group5 . $product_styles_default); ?>"
          data-product-key="<?php echo esc_attr($product_key); ?>"
          data-group="<?php echo esc_attr($group_id); ?>"

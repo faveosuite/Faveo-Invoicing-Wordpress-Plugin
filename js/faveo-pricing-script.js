@@ -155,5 +155,24 @@ toggles.forEach(toggle => {
       updateGroup({ checked: false }, g);
     }
   });
+  
+  function updateVisibleCounts() {
+  document.querySelectorAll('.products-wrapper').forEach(wrapper => {
+    const cards = wrapper.querySelectorAll('.product-container');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const style = window.getComputedStyle(card);
+      if (style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0") {
+        visibleCount++;
+      }
+    });
+
+    wrapper.setAttribute('data-count', visibleCount);
+  });
+}
+
+updateVisibleCounts();
+
 
 });
