@@ -1,5 +1,5 @@
 <?php
-// Add menu item in admin
+// Add menu item in Admin
 add_action('admin_menu', 'fhai_menu');
 function fhai_menu() {
     add_menu_page(
@@ -12,7 +12,7 @@ function fhai_menu() {
     );
 }
 
-// Settings page HTML
+// Settings page
 function fhai_settings_page() {
     ?>
     <div class="wrap">
@@ -29,7 +29,7 @@ function fhai_settings_page() {
     <?php
 }
 
-// Initialize settings
+// Settings
 add_action('admin_init', 'fhai_settings_init');
 function fhai_settings_init() {
     register_setting('fhai_settings_group', 'fhai_api_url', 'fhai_validate_api_url');
@@ -59,7 +59,7 @@ function fhai_settings_init() {
     );
 }
 
-// Section description
+// Description
 function fhai_settings_section_callback() {
     echo 'Enter the API URL and Custom Sales URL for Faveo Invoicing.';
 }

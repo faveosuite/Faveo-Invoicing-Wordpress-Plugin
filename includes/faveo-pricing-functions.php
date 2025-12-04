@@ -1,5 +1,5 @@
 <?php
-// Detect user IP
+// User IP
 function fhai_get_user_ip() {
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
         $ip = sanitize_text_field(wp_unslash($_SERVER['HTTP_CLIENT_IP']));
@@ -14,11 +14,10 @@ function fhai_get_user_ip() {
     return $ip;
 }
 
-// Get country from IP with fallback
+// Get country from IP if not fallback to default
 function fhai_get_country_from_ip($ip) {
     $default_country = 'US';
 
-    // Cloudflare header shortcut
     if (!empty($_SERVER['HTTP_CF_IPCOUNTRY'])) {
         return strtoupper($_SERVER['HTTP_CF_IPCOUNTRY']);
     }
@@ -43,7 +42,7 @@ function fhai_get_country_from_ip($ip) {
     }
 }
 
-// Currency symbol mapping
+// Currency and symbols
 function fhai_currency_symbol_combined($key) {
     $map = [
         'USD' => '$', 'INR' => '₹', 'GBP' => '£', 'EUR' => '€',
@@ -67,10 +66,10 @@ function fhai_currency_symbol_combined($key) {
     return $map[$key] ?? '$';
 }
 
-// Format Indian number without rounding
+// Indian number Format without rounding
 function indian_number_format($number) {
     $formatter = new \NumberFormatter('en_IN', \NumberFormatter::DECIMAL);
-    return $formatter->format($number); // keep decimals
+    return $formatter->format($number);
 }
 
 // Template loader

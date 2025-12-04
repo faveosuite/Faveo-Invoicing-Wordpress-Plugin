@@ -73,7 +73,6 @@ if (!empty($product['pricing-background-color'])) {
         $display_price = ($currency_code === 'INR' || $country_code === 'IN') ? indian_number_format($effective_price) : number_format($effective_price, 2);
     }
 
-    // product key (prefer an ID if available, else sanitized name)
     $product_key = isset($product['id']) ? 'p-' . intval($product['id']) : sanitize_title($product['name']);
 
  $visible_count++;
@@ -106,7 +105,7 @@ if (!empty($product['pricing-background-color'])) {
                     <?php endif; ?>
 
                     <?php if (!empty($product['add_to_contact'])) : ?>
-                        <!-- keep data attributes so JS can still read if needed -->
+                       
                         <h2 data-monthly-price="<?php echo esc_attr($monthly_price); ?>" data-yearly-price="<?php echo esc_attr($yearly_price); ?>"
                             style="font-size:30px !important; height:100px !important; line-height:50px; margin-top:30px;">
                             Custom Pricing
@@ -135,7 +134,7 @@ if (!empty($product['pricing-background-color'])) {
                 </div> <!-- product-pricing -->
 
                 <?php
-                // Keep description with tooltips
+             
                 $description_with_tooltips = preg_replace_callback(
                     '/<li([^>]*)>(.*?)<\/li>/i',
                     function ($matches) {

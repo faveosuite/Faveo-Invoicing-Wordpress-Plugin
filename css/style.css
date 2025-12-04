@@ -103,23 +103,21 @@
 .product-container{
     position: relative;
     margin: 25px 3px;
-    /*box-shadow: 3px 4px 5px 2px #c7c7c7;*/
     padding: 20px 16px 20px 16px;
-     flex: 1 1 calc(33.333% - 20px); /* 3 per row by default */
-  max-width: 310px; /* prevent cards from being too wide */
-  min-width: 180px; /* prevent cards from shrinking too much */
+     flex: 1 1 calc(33.333% - 20px);
+  max-width: 310px;
+  min-width: 180px;
 }
 
 .products-wrapper{
     display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* keeps products centered */
-  gap: 0px; /* spacing between cards */
+  justify-content: center;
+  gap: 0px; 
 margin-top: 20px;
     
 }
 .product-pricing{
-    /*height:250px;*/
     background:transparent !important;
    width: fit-content;
 }
@@ -129,7 +127,7 @@ margin-top: 20px;
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    width: 200px; /* Adjust the width as needed */
+    width: 200px;
 }
 
 .toggle-labels {
@@ -205,7 +203,6 @@ input:checked + .slider:before {
     width: -webkit-fill-available;
 } 
 .purchase-btn:hover {
-  /*filter: brightness(1.1);*/
 background-color:#000 !important;
   color: #fff;
 }
@@ -276,10 +273,9 @@ background-color:#000 !important;
        background-color: #1572c3;
 }
 
-/* Highlighted card less margin */
+/* Highlighted card less top margin */
 .highlighted-product-container {
     margin-top: 0px !important;
-    /*box-shadow:1px 2px 5px 3px #c1c1c1;*/
 }
 
 .highlighted-product-container .product-pricing >h1{
@@ -304,9 +300,7 @@ background-color:#000 !important;
     line-height: 23px;
     z-index: 10;
 }
-
 /*Product's styles-  needs to be removed after recieving the colors from billing*/
-
 
 
 @media screen and (max-width: 480px) {
@@ -320,7 +314,7 @@ background-color:#000 !important;
 .tooltip-text-hover {
     position: relative;
     display: inline-block;
-    overflow: visible; /* make sure the tooltip can show outside */
+    overflow: visible;
     text-decoration: underline dotted #aaa;
 }
 
@@ -331,28 +325,27 @@ background-color:#000 !important;
     color: #fff;
     padding: 4px 7px;
     border-radius: 3px;
-    white-space: normal;   /* allow wrapping */
-    min-width: 200px;      /* control tooltip width */
+    white-space: normal; 
+    min-width: 200px;   
     position: absolute;
-    top: 100% !important;  /* tooltip box below element */
+    top: 100% !important;
     left: 50%;
     transform: translateX(-40%);
     transition: opacity 0.4s;
-    z-index: 10000;        /* ensure above other elements */
+    z-index: 10000;      
     font-size:12px !important;
    
 }
 
-/* The little arrow */
 .tooltip-text-hover .tooltip-text::after {
   content: "";
     position: absolute;
-    bottom: 100%; /* Position the arrow at the top of the tooltip box */
+    bottom: 100%;
     left: 30%;
     transform: translateX(-50%);
     border-width: 6px;
     border-style: solid;
-    border-color: transparent transparent #333 transparent; /* normal triangle pointing down */
+    border-color: transparent transparent #333 transparent;
 }
 
 .tooltip-text-hover:hover .tooltip-text {
@@ -362,7 +355,6 @@ background-color:#000 !important;
 
 
 .products-wrapper.scrollable {
-    /*max-height: 600px;*/
     overflow-x: scroll;
 }
 
