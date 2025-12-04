@@ -12,7 +12,7 @@ const formatMoney = (num, currency) => {
   if (num === null || isNaN(num)) return (currency || '$') + '0';
   
   const isINR = String(currency || '').trim() === '₹';
-  const floored = Math.floor(Number(num)); // always round down
+  const floored = Math.floor(Number(num));
   
   const formatted = isINR
     ? floored.toLocaleString('en-IN')
@@ -31,15 +31,12 @@ const formatMoney = (num, currency) => {
   function updateGroup(toggle, groupId) {
     const yearlyMode = !!(toggle && toggle.checked);
 
-    // For deduplication in this group: keep track of product keys already shown
     const seenKeys = new Set();
 
-    // iterate cards and apply logic
     productCards.forEach(card => {
       if (String(card.dataset.group) !== String(groupId)) return;
 
       const productKey = String(card.dataset.productKey || card.dataset.product_key || card.dataset.id || (card.querySelector('h1')?.textContent || '')).trim();
-      // if we've already decided to display a card with same key, hide duplicates
       if (productKey && seenKeys.has(productKey)) {
         showEl(card, false);
         return;
@@ -50,7 +47,6 @@ const formatMoney = (num, currency) => {
       const priceEl = card.querySelector('.product-pricing h2');
       if (!priceEl) return;
 
-      // prefer container data attributes (more reliable), fallback to H2 attributes
       const monthlyAttr = (card.dataset.monthly ?? priceEl.getAttribute('data-monthly-price') ?? '');
       const yearlyAttr = (card.dataset.yearly ?? priceEl.getAttribute('data-yearly-price') ?? '');
       const currency = card.dataset.currency ?? '$';
@@ -60,23 +56,23 @@ const formatMoney = (num, currency) => {
       const monthlyOrig = parseMoney(originalStrike?.dataset.monthlyOrig || '');
       const yearlyOrig = parseMoney(originalStrike?.dataset.yearlyOrig || '');
 
-      // Hide 14-day products always
+      // Hide plan with 14-days
       if (days === 14) { showEl(card, false); return; }
 
-      // detect custom pricing (robust: check data-add-to-contact and common dataset variants)
+      // detect custom pricing
       const rawCustom = (card.dataset.addToContact ?? card.dataset.add_to_contact ?? card.dataset['add-to-contact'] ?? '');
       const isCustom = String(rawCustom || '').toLowerCase() === '1' || String(rawCustom || '').toLowerCase() === 'true';
 
       if (isCustom) {
-        // Custom Pricing is a single plan — always show (first occurrence), hide duplicates
+        // Custom Pricing
         priceEl.textContent = 'Custom Pricing';
         if (originalStrike) showEl(originalStrike, false);
         showEl(card, true);
         if (productKey) seenKeys.add(productKey);
-        return; // skip normal price calc
+        return;
       }
 
-      // Normal price calculation
+      // Price calculation
       let finalPrice = null;
       let finalOrig = null;
 
@@ -107,7 +103,7 @@ const formatMoney = (num, currency) => {
         } else { showEl(card, false); return; }
       }
 
-      // Render normal product price + original strike (if available)
+      // Product price + strike Price for Products without toggle
       if (finalPrice !== null) {
         priceEl.textContent = formatMoney(finalPrice, currency);
         if (originalStrike && finalOrig !== null) {
@@ -124,12 +120,12 @@ const formatMoney = (num, currency) => {
     });
   }
 
- // Initialize toggles (each toggle manages its group)
+ // Toggles
 toggles.forEach(toggle => {
   const groupId = toggle.dataset.group;
   const params = new URLSearchParams(window.location.search);
 
-  // DEFAULT: yearly plan shown
+  // Yearly plan by Default
   const paramValue = params.get(`pricing_group_${groupId}`);
   toggle.checked = paramValue === null ? true : paramValue === 'yearly';
 
@@ -144,7 +140,7 @@ toggles.forEach(toggle => {
 });
 
 
-  // Initialize groups that don't have a toggle element
+  // Groups that don't have a toggle
   const groupsWithToggle = new Set(toggles.map(t => String(t.dataset.group)));
   const seenGroups = new Set();
   productCards.forEach(card => {

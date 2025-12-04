@@ -9,20 +9,19 @@
  * Icon: /wp-content/plugins/faveo-agora-invoicing/assets/plugin-icon.png
  */
 
-// Prevent direct access to the file
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Define plugin directory paths
+// Plugin directory paths
 define('FHAI_DIR', plugin_dir_path(__FILE__));
 define('FHAI_URL', plugin_dir_url(__FILE__));
 
-// Include necessary files
+// Include Files
 require_once FHAI_DIR . 'includes/admin-settings.php';
 require_once FHAI_DIR . 'includes/faveo-pricing-functions.php';
 
-// Enqueue styles and scripts
+// Styles and scripts
 add_action('wp_enqueue_scripts', 'fhai_data_enqueue_scripts');
 
 function fhai_data_enqueue_scripts() {
@@ -30,5 +29,5 @@ function fhai_data_enqueue_scripts() {
     wp_enqueue_script('api-data-script', FHAI_URL . 'js/faveo-pricing-script.js', array('jquery'), '1.0', true);
 }
 
-// Shortcode to display product data
+// Shortcode
 add_shortcode('fhai', 'fhai_calling');
