@@ -46,6 +46,20 @@ const formatMoney = (num, currency) => {
       const days = parseInt(card.dataset.days || '0', 10) || 0;
       const priceEl = card.querySelector('.product-pricing h2');
       if (!priceEl) return;
+      
+             // Product with 0 price & no toggle)
+        if (card.dataset.isFree === "1") {
+          priceEl.textContent = 'Free';
+        
+          const originalStrike = card.querySelector('.original-price');
+          if (originalStrike) showEl(originalStrike, false);
+        
+          showEl(card, true);
+          if (productKey) seenKeys.add(productKey);
+        
+          return; 
+        }
+
 
       const monthlyAttr = (card.dataset.monthly ?? priceEl.getAttribute('data-monthly-price') ?? '');
       const yearlyAttr = (card.dataset.yearly ?? priceEl.getAttribute('data-yearly-price') ?? '');
