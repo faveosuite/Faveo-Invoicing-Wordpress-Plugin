@@ -72,8 +72,8 @@ function fhai_api_url_callback() {
 
 // Custom Sales URL field
 function fhai_custom_sales_url_callback() {
-    $custom_sales_url = get_option('fhai_custom_sales_url');
-    echo '<input type="text" id="fhai_custom_sales_url" name="fhai_custom_sales_url" value="' . esc_attr($custom_sales_url) . '" size="50" />';
+    $fhai_custom_sales_url = get_option('fhai_custom_sales_url');
+    echo '<input type="text" id="fhai_custom_sales_url" name="fhai_custom_sales_url" value="' . esc_attr($fhai_custom_sales_url) . '" size="50" />';
 }
 
 // Validate API URL
