@@ -65,8 +65,14 @@ else {
     $fhai_monthly_price = floatval($fhai_product['add_price']);
     $fhai_yearly_price = floatval($fhai_product['add_price']);
     $fhai_offer_price = floatval($fhai_product['offer_price'] ?? 0);
+    
+    // ✅ ADD / KEEP THIS
+$fhai_is_free_product = (!$all_status_one && $fhai_monthly_price == 0);
 
     $fhai_effective_price = $fhai_offer_price > 0 ? $fhai_monthly_price - ($fhai_monthly_price * ($fhai_offer_price / 100)) : $fhai_monthly_price;
+
+// Free product (no toggle + zero price)
+$fhai_is_free_product = (!$all_status_one && $fhai_monthly_price == 0);
 
     // Format display price
     if (class_exists('NumberFormatter')) {
@@ -90,7 +96,8 @@ else {
          data-offer="<?php echo esc_attr($fhai_offer_price); ?>"
          data-currency="<?php echo esc_attr($fhai_currency_symbol); ?>"
          data-has-toggle="<?php echo $all_status_one ? '1' : '0'; ?>"
-         data-add-to-contact="<?php echo !empty($fhai_product['add_to_contact']) ? '1' : '0'; ?>"
+         data-add-to-contact="<?php echo !empty($fhai_product['add_to_contact']) ? '1' : '0'; ?>" 
+          data-is-free="<?php echo $fhai_is_free_product ? '1' : '0'; ?>"
     >
 
         <div class="additional-container">
@@ -120,9 +127,17 @@ else {
                         <?php $fhai_custom_sales_url = get_option('fhai_custom_sales_url','https://www.example.com/'); ?>
                         <a href="<?php echo esc_url($fhai_custom_sales_url); ?>" class="purchase-btn">Custom Sales</a>
                     <?php else : ?>
-                        <h2 data-monthly-price="<?php echo esc_attr($fhai_monthly_price); ?>" data-yearly-price="<?php echo esc_attr($fhai_yearly_price); ?>">
+                       <h2 data-monthly-price="<?php echo esc_attr($fhai_monthly_price); ?>"
+                        data-yearly-price="<?php echo esc_attr($fhai_yearly_price); ?>">
+                    
+                        <?php if ($fhai_is_free_product) : ?>
+                            Free
+                        <?php else : ?>
                             <?php echo esc_html($fhai_display_price); ?>
-                        </h2>
+                        <?php endif; ?>
+                    
+                    </h2>
+
 
                         <?php if ($fhai_offer_price>0) :
                             $fhai_formatted_orig = ($fhai_currency_code === 'INR' || $country_code==='IN') ? fhai_indian_number_format($fhai_monthly_price) : number_format($fhai_monthly_price, 2);

@@ -119,7 +119,7 @@ margin-top: 20px;
 }
 .product-pricing{
     background:transparent !important;
-   width: fit-content;
+   width: -webkit-fill-available;
 }
 
 /* Toggle Switch Styles */
