@@ -14,33 +14,39 @@ function fhai_get_user_ip() {
     return $ip;
 }
 
-// Get country from IP if not fallback to default
+// Get country from IP (simple & minimal)
 function fhai_get_country_from_ip($ip) {
     $default_country = 'US';
 
-    if (!empty($_SERVER['HTTP_CF_IPCOUNTRY'])) {
-        return strtoupper($_SERVER['HTTP_CF_IPCOUNTRY']);
-    }
+    // Cloudflare header override (fast + reliable)
+   if (!empty($_SERVER['HTTP_CF_IPCOUNTRY'])) {
+    $cf_country = sanitize_text_field(
+        wp_unslash($_SERVER['HTTP_CF_IPCOUNTRY'])
+    );
 
+    return strtoupper($cf_country);
+}
     if (empty($ip)) {
         return $default_country;
     }
 
-    try {
-        $response = wp_remote_get("https://ipapi.co/{$ip}/json/", array('timeout' => 5));
-        if (is_wp_error($response)) {
-            return $default_country;
-        }
+    $url = 'http://ip-api.com/json/' . urlencode($ip) . '?fields=countryCode';
 
-        $data = json_decode(wp_remote_retrieve_body($response), true);
-        return !empty($data['country']) ? strtoupper($data['country']) : $default_country;
-    } catch (Exception $e) {
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('Faveo Invoicing: Failed to detect country from IP. ' . $e->getMessage());
-        }
+    $response = wp_remote_get($url, [
+        'timeout' => 5,
+    ]);
+
+    if (is_wp_error($response)) {
         return $default_country;
     }
+
+    $data = json_decode(wp_remote_retrieve_body($response), true);
+
+    return !empty($data['countryCode'])
+        ? strtoupper($data['countryCode'])
+        : $default_country;
 }
+
 
 // Currency and symbols
 function fhai_currency_symbol_combined($key) {
@@ -66,10 +72,10 @@ function fhai_currency_symbol_combined($key) {
     return $map[$key] ?? '$';
 }
 
-// Indian number Format without rounding
-function indian_number_format($number) {
-    $formatter = new \NumberFormatter('en_IN', \NumberFormatter::DECIMAL);
-    return $formatter->format($number);
+// Indian number format without rounding
+function fhai_indian_number_format($number) {
+    $fhai_formatter = new \NumberFormatter('en_IN', \NumberFormatter::DECIMAL);
+    return $fhai_formatter->format($number);
 }
 
 // Template loader
@@ -77,9 +83,6 @@ function fhai_get_template($template_name, $args = array()) {
     $template_path = FHAI_DIR . 'templates/' . $template_name;
 
     if (!file_exists($template_path)) {
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log("Faveo Invoicing: Template not found - {$template_name}");
-        }
         return '<p style="color:red;">Template not found.</p>';
     }
 
@@ -121,8 +124,8 @@ function fhai_calling($atts) {
 
     // Check if all products are active
     $all_status_one = true;
-    foreach ($products_data['products'] as $product) {
-        if ($product['status'] !== "1") {
+    foreach ($products_data['products'] as $fhai_product) {
+        if ($fhai_product['status'] !== "1") {
             $all_status_one = false;
             break;
         }
