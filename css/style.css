@@ -46,9 +46,15 @@
 	font-size: 42px !important;
     font-weight: 500 !important;
     margin-top:0px;
-    height:65px !important;
+    /*height:65px !important;*/
     color:#141617 !important;
 }
+/*.custom-pricing{*/
+/*    font-size:30px;*/
+/*    height:100px !important;*/
+/*    line-height:50px;*/
+/*    margin-top:30px;*/
+/*}*/
 .packagess >h3{
 	color:#fff;
 	margin-top:-10px

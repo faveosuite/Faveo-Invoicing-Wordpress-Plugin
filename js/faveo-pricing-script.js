@@ -1,188 +1,147 @@
 document.addEventListener('DOMContentLoaded', function () {
 
   const parseMoney = (str) => {
-    if (str === null || str === undefined) return null;
-    const s = String(str).trim();
-    if (!s) return null;
-    const cleaned = s.replace(/,/g, '').replace(/[^\d.]/g, '');
+    if (!str) return null;
+    const cleaned = String(str).replace(/,/g, '').replace(/[^\d.]/g, '');
     return cleaned === '' ? null : parseFloat(cleaned);
   };
 
-const formatMoney = (num, currency) => {
-  if (num === null || isNaN(num)) return (currency || '$') + '0';
-  
-  const isINR = String(currency || '').trim() === '₹';
-  const floored = Math.floor(Number(num));
-  
-  const formatted = isINR
-    ? floored.toLocaleString('en-IN')
-    : floored.toLocaleString();
-    
-  return (currency || '$') + formatted;
-};
+  const formatMoney = (num, currency) => {
+    if (num === null || isNaN(num)) return '';
+    const floored = Math.floor(Number(num));
+    const formatted = floored.toLocaleString();
+    return (currency || '') + formatted;
+  };
 
-
-
-  const showEl = (el, show) => { if (el) el.style.display = show ? '' : 'none'; };
+  const showEl = (el, show) => {
+    if (el) el.style.display = show ? '' : 'none';
+  };
 
   const toggles = Array.from(document.querySelectorAll('.pricing-toggle'));
   const productCards = Array.from(document.querySelectorAll('.product-container'));
 
   function updateGroup(toggle, groupId) {
     const yearlyMode = !!(toggle && toggle.checked);
-
     const seenKeys = new Set();
+    let visibleCount = 0; // ✅ COUNT VISIBLE PRODUCTS
 
     productCards.forEach(card => {
-      if (String(card.dataset.group) !== String(groupId)) return;
+      if (!card.dataset.group || String(card.dataset.group) !== String(groupId)) return;
 
-      const productKey = String(card.dataset.productKey || card.dataset.product_key || card.dataset.id || (card.querySelector('h1')?.textContent || '')).trim();
+      const productKey =
+        card.dataset.productKey ||
+        card.querySelector('h1')?.textContent ||
+        '';
+
+      // Hide duplicate products
       if (productKey && seenKeys.has(productKey)) {
         showEl(card, false);
         return;
       }
 
-      const hasToggle = String(card.dataset.hasToggle) === '1';
-      const days = parseInt(card.dataset.days || '0', 10) || 0;
+      const hasToggle = card.dataset.hasToggle === '1';
+      const days = parseInt(card.dataset.days || '0', 10);
       const priceEl = card.querySelector('.product-pricing h2');
       if (!priceEl) return;
-      
-             // Product with 0 price & no toggle)
-        if (card.dataset.isFree === "1") {
-          priceEl.textContent = 'Free';
-        
-          const originalStrike = card.querySelector('.original-price');
-          if (originalStrike) showEl(originalStrike, false);
-        
-          showEl(card, true);
-          if (productKey) seenKeys.add(productKey);
-        
-          return; 
-        }
 
-
-      const monthlyAttr = (card.dataset.monthly ?? priceEl.getAttribute('data-monthly-price') ?? '');
-      const yearlyAttr = (card.dataset.yearly ?? priceEl.getAttribute('data-yearly-price') ?? '');
-      const currency = card.dataset.currency ?? '$';
-      const offerPct = parseFloat(card.dataset.offer || '0') || 0;
-      const originalStrike = card.querySelector('.original-price');
-
-      const monthlyOrig = parseMoney(originalStrike?.dataset.monthlyOrig || '');
-      const yearlyOrig = parseMoney(originalStrike?.dataset.yearlyOrig || '');
-
-      // Hide plan with 14-days
-      if (days === 14) { showEl(card, false); return; }
-
-      // detect custom pricing
-      const rawCustom = (card.dataset.addToContact ?? card.dataset.add_to_contact ?? card.dataset['add-to-contact'] ?? '');
-      const isCustom = String(rawCustom || '').toLowerCase() === '1' || String(rawCustom || '').toLowerCase() === 'true';
-
-      if (isCustom) {
-        // Custom Pricing
-        priceEl.textContent = 'Custom Pricing';
-        if (originalStrike) showEl(originalStrike, false);
+      // Free product
+      if (card.dataset.isFree === "1") {
+        priceEl.textContent = 'Free';
+        showEl(card.querySelector('.original-price'), false);
         showEl(card, true);
-        if (productKey) seenKeys.add(productKey);
+        seenKeys.add(productKey);
+        visibleCount++;
         return;
       }
 
-      // Price calculation
-      let finalPrice = null;
-      let finalOrig = null;
+      const monthlyAttr = parseMoney(card.dataset.monthly);
+      const yearlyAttr  = parseMoney(card.dataset.yearly);
+      const currency    = card.dataset.currencySymbol || '';
+      const offerPct    = parseFloat(card.dataset.offer || '0');
 
-      if (yearlyMode && hasToggle) {
-        if (days >= 365) {
-          const yr = parseMoney(yearlyAttr);
-          if (yr === null) { showEl(card, false); return; }
-          let val = yr;
-          if (offerPct > 0) val = val - (val * (offerPct / 100));
-          finalPrice = val / 12;
-          finalOrig = (yearlyOrig !== null) ? (yearlyOrig / 12) : null;
-        } else { showEl(card, false); return; }
-      } else if (!hasToggle && days >= 365) {
-        const yr = parseMoney(yearlyAttr);
-        if (yr === null) { showEl(card, false); return; }
-        let val = yr;
-        if (offerPct > 0) val = val - (val * (offerPct / 100));
-        finalPrice = val;
-        finalOrig = (yearlyOrig !== null) ? yearlyOrig : null;
-      } else if (!yearlyMode) {
-        if (days >= 28 && days < 365) {
-          const mo = parseMoney(monthlyAttr);
-          if (mo === null) { showEl(card, false); return; }
-          let val = mo;
-          if (offerPct > 0) val = val - (val * (offerPct / 100));
-          finalPrice = val;
-          finalOrig = (monthlyOrig !== null) ? monthlyOrig : null;
-        } else { showEl(card, false); return; }
+      // Custom pricing
+      const isCustom = ['1', 'true'].includes(card.dataset.addToContact || '0');
+      if (isCustom) {
+        priceEl.textContent = 'Custom Pricing';
+        showEl(card.querySelector('.original-price'), false);
+        showEl(card, true);
+        seenKeys.add(productKey);
+        visibleCount++;
+        return;
       }
 
-      // Product price + strike Price for Products without toggle
+      let finalPrice = null;
+
+      if (yearlyMode && hasToggle && days >= 365) {
+        finalPrice = yearlyAttr - (yearlyAttr * (offerPct / 100));
+        finalPrice /= 12;
+      } else if (!yearlyMode && days >= 28 && days < 365) {
+        finalPrice = monthlyAttr - (monthlyAttr * (offerPct / 100));
+      } else if (!hasToggle && days >= 365) {
+        finalPrice = yearlyAttr - (yearlyAttr * (offerPct / 100));
+      }
+
       if (finalPrice !== null) {
         priceEl.textContent = formatMoney(finalPrice, currency);
-        if (originalStrike && finalOrig !== null) {
-          originalStrike.textContent = formatMoney(finalOrig, currency);
+
+        const originalStrike = card.querySelector('.original-price');
+        if (originalStrike) {
+          originalStrike.textContent = formatMoney(
+            yearlyMode ? yearlyAttr : monthlyAttr,
+            currency
+          );
           showEl(originalStrike, offerPct > 0);
-        } else if (originalStrike) {
-          showEl(originalStrike, false);
         }
+
         showEl(card, true);
-        if (productKey) seenKeys.add(productKey);
+        seenKeys.add(productKey);
+        visibleCount++;
       } else {
         showEl(card, false);
       }
     });
+
+    // ✅ UPDATE data-count (THIS FIXES YOUR UI)
+    const wrapper =
+      document.querySelector(`.products-wrapper[data-group="${groupId}"]`) ||
+      document.querySelector('.products-wrapper');
+
+    if (wrapper) {
+      wrapper.dataset.count = visibleCount;
+    }
   }
 
- // Toggles
-toggles.forEach(toggle => {
-  const groupId = toggle.dataset.group;
-  const params = new URLSearchParams(window.location.search);
+  // Toggle-enabled groups
+  toggles.forEach(toggle => {
+    const groupId = toggle.dataset.group;
+    const paramValue = new URLSearchParams(window.location.search)
+      .get(`pricing_group_${groupId}`);
 
-  // Yearly plan by Default
-  const paramValue = params.get(`pricing_group_${groupId}`);
-  toggle.checked = paramValue === null ? true : paramValue === 'yearly';
-
-  updateGroup(toggle, groupId);
-
-  toggle.addEventListener('change', () => {
+    toggle.checked = paramValue === null ? true : paramValue === 'yearly';
     updateGroup(toggle, groupId);
-    const p = new URLSearchParams(window.location.search);
-    p.set(`pricing_group_${groupId}`, toggle.checked ? 'yearly' : 'monthly');
-    window.history.replaceState({}, '', `${location.pathname}?${p.toString()}`);
+
+    toggle.addEventListener('change', () => {
+      updateGroup(toggle, groupId);
+      const params = new URLSearchParams(window.location.search);
+      params.set(
+        `pricing_group_${groupId}`,
+        toggle.checked ? 'yearly' : 'monthly'
+      );
+      window.history.replaceState({}, '', `${location.pathname}?${params}`);
+    });
   });
-});
 
-
-  // Groups that don't have a toggle
-  const groupsWithToggle = new Set(toggles.map(t => String(t.dataset.group)));
+  // Groups WITHOUT toggle
+  const groupsWithToggle = new Set(toggles.map(t => t.dataset.group));
   const seenGroups = new Set();
+
   productCards.forEach(card => {
-    const g = String(card.dataset.group);
+    const g = card.dataset.group;
     if (seenGroups.has(g)) return;
     seenGroups.add(g);
     if (!groupsWithToggle.has(g)) {
       updateGroup({ checked: false }, g);
     }
   });
-  
-  function updateVisibleCounts() {
-  document.querySelectorAll('.products-wrapper').forEach(wrapper => {
-    const cards = wrapper.querySelectorAll('.product-container');
-    let visibleCount = 0;
-
-    cards.forEach(card => {
-      const style = window.getComputedStyle(card);
-      if (style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0") {
-        visibleCount++;
-      }
-    });
-
-    wrapper.setAttribute('data-count', visibleCount);
-  });
-}
-
-updateVisibleCounts();
-
 
 });
