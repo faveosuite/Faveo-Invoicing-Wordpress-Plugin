@@ -1,27 +1,37 @@
 <?php
-// Add menu item in Admin
-add_action('admin_menu', 'fhai_menu');
-function fhai_menu() {
+defined('ABSPATH') || exit;
+
+/**
+ * Add admin menu
+ */
+add_action('admin_menu', 'fhai_register_admin_menu');
+function fhai_register_admin_menu() {
     add_menu_page(
-        'Faveo Invoicing Settings',
-        'Faveo Invoicing',
+        __('Faveo Invoicing Settings', 'fhai'),
+        __('Faveo Invoicing', 'fhai'),
         'manage_options',
-        'faveo-invoicing-settings',
-        'fhai_settings_page',
+        'fhai-invoicing-settings',
+        'fhai_render_settings_page',
         'dashicons-admin-generic'
     );
 }
 
-// Settings page
-function fhai_settings_page() {
+/**
+ * Render settings page
+ */
+function fhai_render_settings_page() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
     ?>
     <div class="wrap">
-        <h1>Faveo Invoicing Settings</h1>
+        <h1><?php esc_html_e('Faveo Invoicing Settings', 'fhai'); ?></h1>
         <?php settings_errors(); ?>
+
         <form method="post" action="options.php">
             <?php
             settings_fields('fhai_settings_group');
-            do_settings_sections('faveo-invoicing-settings');
+            do_settings_sections('fhai-invoicing-settings');
             submit_button();
             ?>
         </form>
@@ -29,67 +39,108 @@ function fhai_settings_page() {
     <?php
 }
 
-// Settings
-add_action('admin_init', 'fhai_settings_init');
-function fhai_settings_init() {
-    register_setting('fhai_settings_group', 'fhai_api_url', 'fhai_validate_api_url');
-    register_setting('fhai_settings_group', 'fhai_custom_sales_url', 'fhai_validate_custom_sales_url');
+/**
+ * Register settings
+ */
+add_action('admin_init', 'fhai_register_settings');
+function fhai_register_settings() {
+
+    register_setting(
+        'fhai_settings_group',
+        'fhai_api_url',
+        'fhai_validate_api_url'
+    );
+
+    register_setting(
+        'fhai_settings_group',
+        'fhai_custom_sales_url',
+        'fhai_validate_custom_sales_url'
+    );
 
     add_settings_section(
-        'fhai_settings_section',
-        'API Settings',
-        'fhai_settings_section_callback',
-        'faveo-invoicing-settings'
+        'fhai_api_section',
+        __('API Settings', 'fhai'),
+        'fhai_api_section_callback',
+        'fhai-invoicing-settings'
     );
 
     add_settings_field(
         'fhai_api_url',
-        'API URL',
-        'fhai_api_url_callback',
-        'faveo-invoicing-settings',
-        'fhai_settings_section'
+        __('Faveo Invoicing API Base URL', 'fhai'),
+        'fhai_api_url_field',
+        'fhai-invoicing-settings',
+        'fhai_api_section'
     );
 
     add_settings_field(
         'fhai_custom_sales_url',
-        'Custom Sales URL',
-        'fhai_custom_sales_url_callback',
-        'faveo-invoicing-settings',
-        'fhai_settings_section'
+        __('Custom Sales URL', 'fhai'),
+        'fhai_custom_sales_url_field',
+        'fhai-invoicing-settings',
+        'fhai_api_section'
     );
 }
 
-// Description
-function fhai_settings_section_callback() {
-    echo 'Enter the API URL and Custom Sales URL for Faveo Invoicing.';
+/**
+ * Section description
+ */
+function fhai_api_section_callback() {
+    echo esc_html__(
+        'Enter the base API URL.',
+        'fhai'
+    );
 }
 
-// API URL field
-function fhai_api_url_callback() {
-    $api_url = get_option('fhai_api_url');
-    echo '<input type="text" id="fhai_api_url" name="fhai_api_url" value="' . esc_attr($api_url) . '" size="50" />';
+/**
+ * API URL field
+ */
+function fhai_api_url_field() {
+    $value = esc_url(get_option('fhai_api_url', ''));
+    echo '<input type="url" class="regular-text" name="fhai_api_url" value="' . esc_attr($value) . '" />';
 }
 
-// Custom Sales URL field
-function fhai_custom_sales_url_callback() {
-    $fhai_custom_sales_url = get_option('fhai_custom_sales_url');
-    echo '<input type="text" id="fhai_custom_sales_url" name="fhai_custom_sales_url" value="' . esc_attr($fhai_custom_sales_url) . '" size="50" />';
+/**
+ * Custom sales URL field
+ */
+function fhai_custom_sales_url_field() {
+    $value = esc_url(get_option('fhai_custom_sales_url', ''));
+    echo '<input type="url" class="regular-text" name="fhai_custom_sales_url" value="' . esc_attr($value) . '" />';
 }
 
-// Validate API URL
+/**
+ * Validate API URL
+ */
 function fhai_validate_api_url($input) {
+    $input = esc_url_raw(trim($input));
+
     if (empty($input) || !filter_var($input, FILTER_VALIDATE_URL)) {
-        add_settings_error('fhai_api_url', 'invalid_url', 'Please enter a valid API URL', 'error');
+        add_settings_error(
+            'fhai_api_url',
+            'fhai_invalid_api_url',
+            __('Please enter a valid API URL.', 'fhai'),
+            'error'
+        );
         return get_option('fhai_api_url');
     }
+
     return $input;
 }
 
-// Validate Custom Sales URL
+/**
+ * Validate Custom Sales URL
+ */
 function fhai_validate_custom_sales_url($input) {
+    $input = esc_url_raw(trim($input));
+
     if (empty($input) || !filter_var($input, FILTER_VALIDATE_URL)) {
-        add_settings_error('fhai_custom_sales_url', 'invalid_sales_url', 'Please enter a valid Custom Sales URL', 'error');
+        add_settings_error(
+            'fhai_custom_sales_url',
+            'fhai_invalid_sales_url',
+            __('Please enter a valid Custom Sales URL.', 'fhai'),
+            'error'
+        );
         return get_option('fhai_custom_sales_url');
     }
+
     return $input;
 }
