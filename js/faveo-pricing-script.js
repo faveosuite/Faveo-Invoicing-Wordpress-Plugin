@@ -11,13 +11,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const value = Number(num);
 
-  const formatted = value.toLocaleString(undefined, {
+  const locale = currency === '₹' ? 'en-IN' : undefined;
+
+  const formatted = value.toLocaleString(locale, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
 
   return (currency || '') + formatted;
 };
+
 
   const showEl = (el, show) => {
     if (el) el.style.display = show ? '' : 'none';
