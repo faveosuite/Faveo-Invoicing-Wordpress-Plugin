@@ -7,11 +7,17 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const formatMoney = (num, currency) => {
-    if (num === null || isNaN(num)) return '';
-    const floored = Math.floor(Number(num));
-    const formatted = floored.toLocaleString();
-    return (currency || '') + formatted;
-  };
+  if (num === null || isNaN(num)) return '';
+
+  const value = Number(num);
+
+  const formatted = value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  return (currency || '') + formatted;
+};
 
   const showEl = (el, show) => {
     if (el) el.style.display = show ? '' : 'none';
