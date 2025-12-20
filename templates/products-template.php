@@ -45,9 +45,9 @@ foreach ($products as $fhai_product) :
         switch ($fhai_product['name']) {
             case in_array($fhai_product['name'], ['Helpdesk Freelancer','ServiceDesk Freelancer','Faveo Cloud HelpDesk','Support service','Customization','Faveo Upgrade','Install service']):
                 $fhai_product_styles_group1 = ' product-styles-group1'; break;
-            case in_array($fhai_product['name'], ['Helpdesk Startup','Servicedesk Startup','Helpdesk Startup (Recurring)','ServiceDesk Startup (Recurring)','Faveo Cloud Helpdesk Startup','Faveo Cloud ServiceDesk  Startup']):
+            case in_array($fhai_product['name'], ['Helpdesk Startup','Servicedesk Startup','Helpdesk Startup (Recurring)','ServiceDesk Startup (Recurring)','Faveo Cloud Helpdesk Startup','Faveo Cloud ServiceDesk Startup']):
                 $fhai_product_styles_group2 = ' product-styles-group2'; break;
-            case in_array($fhai_product['name'], ['Helpdesk SME ','ServiceDesk SME','Helpdesk SME (Recurring)','ServiceDesk SME (Recurring)','Faveo Cloud Helpdesk SME','Faveo Cloud ServiceDesk SME']):
+            case in_array($fhai_product['name'], ['Helpdesk SME','ServiceDesk SME','Helpdesk SME (Recurring)','ServiceDesk SME (Recurring)','Faveo Cloud Helpdesk SME','Faveo Cloud ServiceDesk SME']):
                 $fhai_product_styles_group3 = ' product-styles-group3'; break;
             case in_array($fhai_product['name'], ['Helpdesk Enterprise','Helpdesk Enterprise (Recurring)','ServiceDesk Enterprise','ServiceDesk Enterprise (Recurring)','Faveo Cloud Helpdesk Enterprise','Faveo Cloud ServiceDesk Enterprise']):
                 $fhai_product_styles_group4 = ' product-styles-group4'; break;

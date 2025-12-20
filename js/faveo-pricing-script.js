@@ -7,20 +7,19 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const formatMoney = (num, currency) => {
-  if (num === null || isNaN(num)) return '';
+    if (num === null || isNaN(num)) return '';
 
-  const value = Number(num);
+    const value = Number(num);
 
-  const locale = currency === '₹' ? 'en-IN' : undefined;
+    const locale = currency === '₹' ? 'en-IN' : undefined;
 
-  const formatted = value.toLocaleString(locale, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
+    const formatted = value.toLocaleString(locale, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
-  return (currency || '') + formatted;
-};
-
+    return (currency || '') + formatted;
+  };
 
   const showEl = (el, show) => {
     if (el) el.style.display = show ? '' : 'none';
@@ -29,20 +28,35 @@ document.addEventListener('DOMContentLoaded', function () {
   const toggles = Array.from(document.querySelectorAll('.pricing-toggle'));
   const productCards = Array.from(document.querySelectorAll('.product-container'));
 
+  /**
+   * MAIN UPDATE FUNCTION (SCOPED & SAFE)
+   */
   function updateGroup(toggle, groupId) {
     const yearlyMode = !!(toggle && toggle.checked);
-    const seenKeys = new Set();
-    let visibleCount = 0; // ✅ COUNT VISIBLE PRODUCTS
+
+    // 🔑 Map wrapper => visible count
+    const wrapperCountMap = new Map();
+    const seenKeysMap = new Map();
 
     productCards.forEach(card => {
-      if (!card.dataset.group || String(card.dataset.group) !== String(groupId)) return;
+      if (String(card.dataset.group) !== String(groupId)) return;
+
+      const wrapper = card.closest('.products-wrapper');
+      if (!wrapper) return;
+
+      if (!wrapperCountMap.has(wrapper)) {
+        wrapperCountMap.set(wrapper, 0);
+        seenKeysMap.set(wrapper, new Set());
+      }
+
+      const seenKeys = seenKeysMap.get(wrapper);
 
       const productKey =
         card.dataset.productKey ||
         card.querySelector('h1')?.textContent ||
         '';
 
-      // Hide duplicate products
+      // Hide duplicate products per-wrapper
       if (productKey && seenKeys.has(productKey)) {
         showEl(card, false);
         return;
@@ -59,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showEl(card.querySelector('.original-price'), false);
         showEl(card, true);
         seenKeys.add(productKey);
-        visibleCount++;
+        wrapperCountMap.set(wrapper, wrapperCountMap.get(wrapper) + 1);
         return;
       }
 
@@ -75,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showEl(card.querySelector('.original-price'), false);
         showEl(card, true);
         seenKeys.add(productKey);
-        visibleCount++;
+        wrapperCountMap.set(wrapper, wrapperCountMap.get(wrapper) + 1);
         return;
       }
 
@@ -94,33 +108,41 @@ document.addEventListener('DOMContentLoaded', function () {
         priceEl.textContent = formatMoney(finalPrice, currency);
 
         const originalStrike = card.querySelector('.original-price');
-        if (originalStrike) {
-          originalStrike.textContent = formatMoney(
-            yearlyMode ? yearlyAttr : monthlyAttr,
-            currency
-          );
-          showEl(originalStrike, offerPct > 0);
-        }
+if (originalStrike) {
+  let originalPrice = null;
+
+  if (yearlyMode && hasToggle && days >= 365) {
+    // Yearly shown as per-month → divide original too
+    originalPrice = yearlyAttr / 12;
+  } else if (!yearlyMode && days >= 28 && days < 365) {
+    // Monthly mode
+    originalPrice = monthlyAttr;
+  } else if (!hasToggle && days >= 365) {
+    // Non-toggle yearly plans
+    originalPrice = yearlyAttr;
+  }
+
+  originalStrike.textContent = formatMoney(originalPrice, currency);
+  showEl(originalStrike, offerPct > 0 && originalPrice !== null);
+}
 
         showEl(card, true);
         seenKeys.add(productKey);
-        visibleCount++;
+        wrapperCountMap.set(wrapper, wrapperCountMap.get(wrapper) + 1);
       } else {
         showEl(card, false);
       }
     });
 
-    // ✅ UPDATE data-count (THIS FIXES YOUR UI)
-    const wrapper =
-      document.querySelector(`.products-wrapper[data-group="${groupId}"]`) ||
-      document.querySelector('.products-wrapper');
-
-    if (wrapper) {
-      wrapper.dataset.count = visibleCount;
-    }
+    // ✅ APPLY data-count PER WRAPPER
+    wrapperCountMap.forEach((count, wrapper) => {
+      wrapper.dataset.count = count;
+    });
   }
 
-  // Toggle-enabled groups
+  /**
+   * TOGGLE GROUPS
+   */
   toggles.forEach(toggle => {
     const groupId = toggle.dataset.group;
     const paramValue = new URLSearchParams(window.location.search)
@@ -140,14 +162,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Groups WITHOUT toggle
+  /**
+   * GROUPS WITHOUT TOGGLE
+   */
   const groupsWithToggle = new Set(toggles.map(t => t.dataset.group));
-  const seenGroups = new Set();
+  const processed = new Set();
 
   productCards.forEach(card => {
     const g = card.dataset.group;
-    if (seenGroups.has(g)) return;
-    seenGroups.add(g);
+    const wrapper = card.closest('.products-wrapper');
+    if (!wrapper) return;
+
+    const key = `${g}-${wrapper.dataset.instance || wrapper}`;
+    if (processed.has(key)) return;
+    processed.add(key);
+
     if (!groupsWithToggle.has(g)) {
       updateGroup({ checked: false }, g);
     }
