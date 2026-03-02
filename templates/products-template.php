@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly.
+}
 /**
  * Products Template
  *
@@ -45,13 +48,13 @@ foreach ($products as $fhai_product) :
         switch ($fhai_product['name']) {
             case in_array($fhai_product['name'], ['Helpdesk Freelancer','ServiceDesk Freelancer','Faveo Cloud HelpDesk','Support service','Customization','Faveo Upgrade','Install service']):
                 $fhai_product_styles_group1 = ' product-styles-group1'; break;
-            case in_array($fhai_product['name'], ['Helpdesk Startup','Servicedesk Startup','Helpdesk Startup (Recurring)','ServiceDesk Startup (Recurring)','Faveo Cloud Helpdesk Startup','Faveo Cloud ServiceDesk Startup']):
+            case in_array($fhai_product['name'], ['Helpdesk Startup (Perpetual)','Servicedesk Startup (Perpetual)','Helpdesk Startup (Recurring)','ServiceDesk Startup (Recurring)','Helpdesk Startup (Cloud)','ServiceDesk Startup (Cloud)']):
                 $fhai_product_styles_group2 = ' product-styles-group2'; break;
-            case in_array($fhai_product['name'], ['Helpdesk SME','ServiceDesk SME','Helpdesk SME (Recurring)','ServiceDesk SME (Recurring)','Faveo Cloud Helpdesk SME','Faveo Cloud ServiceDesk SME']):
+            case in_array($fhai_product['name'], ['Helpdesk SME (Perpetual)','ServiceDesk SME (Perpetual)','Helpdesk SME (Recurring)','ServiceDesk SME (Recurring)','Helpdesk SME (Cloud)','ServiceDesk SME (Cloud)']):
                 $fhai_product_styles_group3 = ' product-styles-group3'; break;
-            case in_array($fhai_product['name'], ['Helpdesk Enterprise','Helpdesk Enterprise (Recurring)','ServiceDesk Enterprise','ServiceDesk Enterprise (Recurring)','Faveo Cloud Helpdesk Enterprise','Faveo Cloud ServiceDesk Enterprise']):
+            case in_array($fhai_product['name'], ['Helpdesk Enterprise (Perpetual)','Helpdesk Enterprise (Recurring)','ServiceDesk Enterprise (Perpetual)','ServiceDesk Enterprise (Recurring)','Helpdesk Enterprise (Cloud)','ServiceDesk Enterprise (Cloud)']):
                 $fhai_product_styles_group4 = ' product-styles-group4'; break;
-            case in_array($fhai_product['name'], ['Helpdesk Enterprise Pro','ServiceDesk Enterprise Pro']):
+            case in_array($fhai_product['name'], ['Helpdesk Enterprise Pro (Perpetual)','ServiceDesk Enterprise Pro (Perpetual)']):
                 $fhai_product_styles_group5 = ' product-styles-group5'; break;
             default:
                 $fhai_product_styles_default = ' product-styles-default';
@@ -137,7 +140,8 @@ foreach ($products as $fhai_product) :
                         <h2 class="custom-pricing">
                             Custom Pricing
                         </h2>
-                        <a href="<?php echo esc_url(get_option('fhai_custom_sales_url', 'https://www.example.com/')); ?>" class="purchase-btn">Custom Sales</a>
+                        <p class="price-description"><?php echo wp_kses_post($fhai_product['price_description']); ?></p>
+                        <a href="<?php echo esc_url(get_option('fhai_custom_sales_url', 'https://www.example.com/')); ?>" class="purchase-btn">Contact Sales</a>
                     <?php else : ?>
                        <h2 
     data-monthly-price="<?php echo esc_attr($fhai_monthly_price); ?>"
