@@ -7,8 +7,8 @@ defined('ABSPATH') || exit;
 add_action('admin_menu', 'fhai_register_admin_menu');
 function fhai_register_admin_menu() {
     add_menu_page(
-        __('Faveo Invoicing Settings', 'fhai'),
-        __('Faveo Invoicing', 'fhai'),
+        __('Faveo Invoicing Settings', 'faveo-agora-invoicing'),
+        __('Faveo Invoicing', 'faveo-agora-invoicing'),
         'manage_options',
         'fhai-invoicing-settings',
         'fhai_render_settings_page',
@@ -25,7 +25,7 @@ function fhai_render_settings_page() {
     }
     ?>
     <div class="wrap">
-        <h1><?php esc_html_e('Faveo Invoicing Settings', 'fhai'); ?></h1>
+        <h1><?php esc_html_e('Faveo Invoicing Settings', 'faveo-agora-invoicing'); ?></h1>
         <?php settings_errors(); ?>
 
         <form method="post" action="options.php">
@@ -59,14 +59,14 @@ function fhai_register_settings() {
 
     add_settings_section(
         'fhai_api_section',
-        __('API Settings', 'fhai'),
+        __('API Settings', 'faveo-agora-invoicing'),
         'fhai_api_section_callback',
         'fhai-invoicing-settings'
     );
 
     add_settings_field(
         'fhai_api_url',
-        __('Faveo Invoicing API Base URL', 'fhai'),
+        __('Faveo Invoicing API Base URL', 'faveo-agora-invoicing'),
         'fhai_api_url_field',
         'fhai-invoicing-settings',
         'fhai_api_section'
@@ -74,7 +74,7 @@ function fhai_register_settings() {
 
     add_settings_field(
         'fhai_custom_sales_url',
-        __('Custom Sales URL', 'fhai'),
+        __('Custom Sales URL', 'faveo-agora-invoicing'),
         'fhai_custom_sales_url_field',
         'fhai-invoicing-settings',
         'fhai_api_section'
@@ -87,7 +87,7 @@ function fhai_register_settings() {
 function fhai_api_section_callback() {
     echo esc_html__(
         'Enter the base API URL.',
-        'fhai'
+        'faveo-agora-invoicing'
     );
 }
 
@@ -117,7 +117,7 @@ function fhai_validate_api_url($input) {
         add_settings_error(
             'fhai_api_url',
             'fhai_invalid_api_url',
-            __('Please enter a valid API URL.', 'fhai'),
+            __('Please enter a valid API URL.', 'faveo-agora-invoicing'),
             'error'
         );
         return get_option('fhai_api_url');
@@ -136,7 +136,7 @@ function fhai_validate_custom_sales_url($input) {
         add_settings_error(
             'fhai_custom_sales_url',
             'fhai_invalid_sales_url',
-            __('Please enter a valid Custom Sales URL.', 'fhai'),
+            __('Please enter a valid Custom Sales URL.', 'faveo-agora-invoicing'),
             'error'
         );
         return get_option('fhai_custom_sales_url');
