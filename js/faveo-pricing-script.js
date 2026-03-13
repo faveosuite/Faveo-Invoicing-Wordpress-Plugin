@@ -95,14 +95,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
       let finalPrice = null;
 
-      if (yearlyMode && hasToggle && days >= 365) {
-        finalPrice = yearlyAttr - (yearlyAttr * (offerPct / 100));
-        finalPrice /= 12;
-      } else if (!yearlyMode && days >= 28 && days < 365) {
-        finalPrice = monthlyAttr - (monthlyAttr * (offerPct / 100));
-      } else if (!hasToggle && days >= 365) {
-        finalPrice = yearlyAttr - (yearlyAttr * (offerPct / 100));
-      }
+      let finalPrice = null;
+
+if (yearlyMode && hasToggle && days >= 365) {
+  finalPrice = yearlyAttr - (yearlyAttr * (offerPct / 100));
+  finalPrice /= 12;
+
+} else if (!yearlyMode && days >= 28 && days < 365) {
+  finalPrice = monthlyAttr - (monthlyAttr * (offerPct / 100));
+
+} else if (!hasToggle && days >= 365) {
+  finalPrice = yearlyAttr - (yearlyAttr * (offerPct / 100));
+
+} else if (days < 28) {   // ✅ FIX: handle one-time pricing
+  finalPrice = monthlyAttr - (monthlyAttr * (offerPct / 100));
+}
 
       if (finalPrice !== null) {
         priceEl.textContent = formatMoney(finalPrice, currency);
