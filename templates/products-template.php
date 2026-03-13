@@ -55,24 +55,18 @@ foreach ( $products as $fhai_product ) :
 	$fhai_background_color       = fhai_sanitize_css_color( $fhai_background_color_raw );
 
 	if ( ! $fhai_background_color ) {
-		switch ( $fhai_product['name'] ) {
-			case in_array( $fhai_product['name'], array( 'Helpdesk Freelancer', 'ServiceDesk Freelancer', 'Faveo Cloud HelpDesk', 'Support service', 'Customization', 'Faveo Upgrade', 'Install service' ), true ):
-				$fhai_product_styles_group1 = ' product-styles-group1';
-				break;
-			case in_array( $fhai_product['name'], array( 'Helpdesk Startup (Perpetual)', 'Servicedesk Startup (Perpetual)', 'Helpdesk Startup (Recurring)', 'ServiceDesk Startup (Recurring)', 'Helpdesk Startup (Cloud)', 'ServiceDesk Startup (Cloud)' ), true ):
-				$fhai_product_styles_group2 = ' product-styles-group2';
-				break;
-			case in_array( $fhai_product['name'], array( 'Helpdesk SME (Perpetual)', 'ServiceDesk SME (Perpetual)', 'Helpdesk SME (Recurring)', 'ServiceDesk SME (Recurring)', 'Helpdesk SME (Cloud)', 'ServiceDesk SME (Cloud)' ), true ):
-				$fhai_product_styles_group3 = ' product-styles-group3';
-				break;
-			case in_array( $fhai_product['name'], array( 'Helpdesk Enterprise (Perpetual)', 'Helpdesk Enterprise (Recurring)', 'ServiceDesk Enterprise (Perpetual)', 'ServiceDesk Enterprise (Recurring)', 'Helpdesk Enterprise (Cloud)', 'ServiceDesk Enterprise (Cloud)' ), true ):
-				$fhai_product_styles_group4 = ' product-styles-group4';
-				break;
-			case in_array( $fhai_product['name'], array( 'Helpdesk Enterprise Pro (Perpetual)', 'ServiceDesk Enterprise Pro (Perpetual)' ), true ):
-				$fhai_product_styles_group5 = ' product-styles-group5';
-				break;
-			default:
-				$fhai_product_styles_default = ' product-styles-default';
+		if ( in_array( $fhai_product['name'], array( 'Helpdesk Freelancer', 'ServiceDesk Freelancer', 'Faveo Cloud HelpDesk', 'Support service', 'Customization', 'Faveo Upgrade', 'Install service' ), true ) ) {
+			$fhai_product_styles_group1 = ' product-styles-group1';
+		} elseif ( in_array( $fhai_product['name'], array( 'Helpdesk Startup (Perpetual)', 'Servicedesk Startup (Perpetual)', 'Helpdesk Startup (Recurring)', 'ServiceDesk Startup (Recurring)', 'Helpdesk Startup (Cloud)', 'ServiceDesk Startup (Cloud)' ), true ) ) {
+			$fhai_product_styles_group2 = ' product-styles-group2';
+		} elseif ( in_array( $fhai_product['name'], array( 'Helpdesk SME (Perpetual)', 'ServiceDesk SME (Perpetual)', 'Helpdesk SME (Recurring)', 'ServiceDesk SME (Recurring)', 'Helpdesk SME (Cloud)', 'ServiceDesk SME (Cloud)' ), true ) ) {
+			$fhai_product_styles_group3 = ' product-styles-group3';
+		} elseif ( in_array( $fhai_product['name'], array( 'Helpdesk Enterprise (Perpetual)', 'Helpdesk Enterprise (Recurring)', 'ServiceDesk Enterprise (Perpetual)', 'ServiceDesk Enterprise (Recurring)', 'Helpdesk Enterprise (Cloud)', 'ServiceDesk Enterprise (Cloud)' ), true ) ) {
+			$fhai_product_styles_group4 = ' product-styles-group4';
+		} elseif ( in_array( $fhai_product['name'], array( 'Helpdesk Enterprise Pro (Perpetual)', 'ServiceDesk Enterprise Pro (Perpetual)' ), true ) ) {
+			$fhai_product_styles_group5 = ' product-styles-group5';
+		} else {
+			$fhai_product_styles_default = ' product-styles-default';
 		}
 	}
 
