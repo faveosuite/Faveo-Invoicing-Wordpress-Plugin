@@ -1,33 +1,77 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-// Get user IP
-
-function fhai_get_user_ip() {
-	$remote_addr = '';
-
-	if ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
-		$remote_addr = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+// Get user IP.
+// Parses forwarded IP headers safely and applies proxy-trust rules before falling back to REMOTE_ADDR.
+function fhai_first_valid_ip_from_header( $header_value, $public_only = false ) {
+	$parts = array_map( 'trim', explode( ',', (string) $header_value ) );
+	foreach ( $parts as $part ) {
+		$flags = $public_only ? FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE : 0;
+		if ( filter_var( $part, FILTER_VALIDATE_IP, $flags ) ) {
+			return $part;
+		}
 	}
 
-	$remote_addr = filter_var( $remote_addr, FILTER_VALIDATE_IP ) ? $remote_addr : '';
-	if ( empty( $remote_addr ) ) {
+	return '';
+}
+
+// Resolve client IP from trusted headers, preferring public IPs first.
+function fhai_get_ip_from_trusted_headers( $trusted_headers ) {
+	foreach ( $trusted_headers as $header_key ) {
+		if ( empty( $_SERVER[ $header_key ] ) ) {
+			continue;
+		}
+
+		$raw_header = sanitize_text_field( wp_unslash( $_SERVER[ $header_key ] ) );
+		$public_ip  = fhai_first_valid_ip_from_header( $raw_header, true );
+		if ( '' !== $public_ip ) {
+			return $public_ip;
+		}
+
+		$ip = fhai_first_valid_ip_from_header( $raw_header );
+		if ( '' !== $ip ) {
+			return $ip;
+		}
+	}
+
+	return '';
+}
+
+// Determine the effective client IP.
+// If the request comes from a trusted or private proxy, use forwarded headers; otherwise use REMOTE_ADDR.
+function fhai_get_user_ip() {
+	if ( empty( $_SERVER['REMOTE_ADDR'] ) ) {
 		return '';
 	}
 
-	// Trust forwarded headers only when request comes through a known proxy.
-	$trusted_proxies = apply_filters( 'fhai_trusted_proxies', array() );
-	if (
-		in_array( $remote_addr, $trusted_proxies, true ) &&
-		! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] )
-	) {
-		$forwarded = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
-		$ip_list   = array_map( 'trim', explode( ',', $forwarded ) );
+	$remote_addr = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+	if ( ! filter_var( $remote_addr, FILTER_VALIDATE_IP ) ) {
+		return '';
+	}
 
-		foreach ( $ip_list as $candidate_ip ) {
-			if ( filter_var( $candidate_ip, FILTER_VALIDATE_IP ) ) {
-				return $candidate_ip;
-			}
+	$trusted_proxies = apply_filters( 'fhai_trusted_proxies', array() );
+	$trusted_headers = apply_filters(
+		'fhai_trusted_ip_headers',
+		array(
+			'HTTP_CF_CONNECTING_IP',
+			'HTTP_TRUE_CLIENT_IP',
+			'HTTP_X_REAL_IP',
+			'HTTP_X_FORWARDED_FOR',
+		)
+	);
+
+	$should_trust_forwarded = in_array( $remote_addr, $trusted_proxies, true );
+
+	// Common hosting pattern: app server sees private/internal proxy IP.
+	$is_remote_public = (bool) filter_var( $remote_addr, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE );
+	if ( ! $is_remote_public ) {
+		$should_trust_forwarded = true;
+	}
+
+	if ( $should_trust_forwarded ) {
+		$trusted_header_ip = fhai_get_ip_from_trusted_headers( $trusted_headers );
+		if ( '' !== $trusted_header_ip ) {
+			return $trusted_header_ip;
 		}
 	}
 
