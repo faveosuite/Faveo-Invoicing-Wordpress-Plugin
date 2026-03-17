@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * @var int   $group_id
  * @var array $atts
  * @var bool  $all_status_one
- * @var array $fhai_products_data  // Full API response with 'currency'
+ * @var array $fhai_products_data
  */
 ?>
 
