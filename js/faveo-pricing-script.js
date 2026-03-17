@@ -6,16 +6,37 @@ document.addEventListener('DOMContentLoaded', function () {
     return cleaned === '' ? null : parseFloat(cleaned);
   };
 
-  const formatMoney = (num, currency) => {
+ const formatMoney = (num, currency) => {
   if (num === null || isNaN(num)) return '';
 
-  const value = Number(num);
+  let value = Number(num).toString();
 
-  const truncated = Math.floor(value * 100) / 100;
+  let [intPart, decPart = ''] = value.split('.');
+
+  // Ensure at least 3 digits for checking
+  decPart = decPart.padEnd(3, '0');
+
+  let firstTwo = decPart.substring(0, 2);
+  const thirdDigit = parseInt(decPart[2], 10);
+
+  let finalDecimals = parseInt(firstTwo, 10);
+
+  // ✅ Round only if 3rd digit > 4
+  if (thirdDigit > 4) {
+    finalDecimals += 1;
+  }
+
+  // Handle carry (e.g., 99 → 100)
+  if (finalDecimals === 100) {
+    intPart = (parseInt(intPart, 10) + 1).toString();
+    finalDecimals = 0;
+  }
+
+  const finalValue = intPart + '.' + finalDecimals.toString().padStart(2, '0');
 
   const locale = currency === '₹' ? 'en-IN' : undefined;
 
-  const formatted = truncated.toLocaleString(locale, {
+  const formatted = Number(finalValue).toLocaleString(locale, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
