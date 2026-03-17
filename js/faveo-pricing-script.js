@@ -7,19 +7,21 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const formatMoney = (num, currency) => {
-    if (num === null || isNaN(num)) return '';
+  if (num === null || isNaN(num)) return '';
 
-    const value = Number(num);
+  const value = Number(num);
 
-    const locale = currency === '₹' ? 'en-IN' : undefined;
+  const truncated = Math.floor(value * 100) / 100;
 
-    const formatted = value.toLocaleString(locale, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
+  const locale = currency === '₹' ? 'en-IN' : undefined;
 
-    return (currency || '') + formatted;
-  };
+  const formatted = truncated.toLocaleString(locale, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  return (currency || '') + formatted;
+};
 
   const showEl = (el, show) => {
     if (el) el.style.display = show ? '' : 'none';
@@ -95,21 +97,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
       let finalPrice = null;
 
-      let finalPrice = null;
-
-if (yearlyMode && hasToggle && days >= 365) {
-  finalPrice = yearlyAttr - (yearlyAttr * (offerPct / 100));
-  finalPrice /= 12;
-
-} else if (!yearlyMode && days >= 28 && days < 365) {
-  finalPrice = monthlyAttr - (monthlyAttr * (offerPct / 100));
-
-} else if (!hasToggle && days >= 365) {
-  finalPrice = yearlyAttr - (yearlyAttr * (offerPct / 100));
-
-} else if (days < 28) {   // ✅ FIX: handle one-time pricing
-  finalPrice = monthlyAttr - (monthlyAttr * (offerPct / 100));
-}
+      if (yearlyMode && hasToggle && days >= 365) {
+        finalPrice = yearlyAttr - (yearlyAttr * (offerPct / 100));
+        finalPrice /= 12;
+      } else if (!yearlyMode && days >= 28 && days < 365) {
+        finalPrice = monthlyAttr - (monthlyAttr * (offerPct / 100));
+      } else if (!hasToggle && days >= 365) {
+        finalPrice = yearlyAttr - (yearlyAttr * (offerPct / 100));
+      }
 
       if (finalPrice !== null) {
         priceEl.textContent = formatMoney(finalPrice, currency);

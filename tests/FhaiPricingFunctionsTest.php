@@ -21,6 +21,12 @@ final class FhaiPricingFunctionsTest extends TestCase {
 		$this->assertSame( '', fhai_first_valid_ip_from_header( $header ) );
 	}
 
+	// Returns the first public IP from the configured header list.
+	public function test_get_ip_from_trusted_headers_prefers_public_ip(): void {
+		$_SERVER['HTTP_X_FORWARDED_FOR'] = '10.0.0.1, 198.51.100.5';
+		$this->assertSame( '198.51.100.5', fhai_get_ip_from_trusted_headers( array( 'HTTP_X_FORWARDED_FOR' ) ) );
+	}
+
 	// No proxy: use REMOTE_ADDR.
 	public function test_get_user_ip_returns_remote_addr_when_no_proxy(): void {
 		$_SERVER['REMOTE_ADDR'] = '203.0.113.7';
