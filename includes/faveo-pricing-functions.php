@@ -102,10 +102,6 @@ function fhai_calling($atts) {
             break;
         }
     }
-
-    // Root-level currency code and symbol from API
-  
-    
     
     $fhai_currency_code = $fhai_products_data['currency'] ?? null;
     $fhai_currency_symbol =

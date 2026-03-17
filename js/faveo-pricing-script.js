@@ -51,9 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const toggles = Array.from(document.querySelectorAll('.pricing-toggle'));
   const productCards = Array.from(document.querySelectorAll('.product-container'));
 
-  /**
-   * MAIN UPDATE FUNCTION (SCOPED & SAFE)
-   */
+ 
   function updateGroup(toggle, groupId) {
     const yearlyMode = !!(toggle && toggle.checked);
 
